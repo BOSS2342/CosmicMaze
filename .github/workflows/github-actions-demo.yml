@@ -16,8 +16,8 @@ jobs:
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
       with:
-        ftp-server: ftp://your-server-address
-        ftp-username: ${{ secrets.FTP_USERNAME }}
-        ftp-password: ${{ secrets.FTP_PASSWORD }}
-        local-dir: ./your-server-files
-        server-dir: /path/to/server-directory
+        ftp-server: ftp://zaincwilson@gmail.com.729244@na1396.pebblehost.com:21
+        ftp-username: zaincwilson@gmail.com.729244
+        ftp-password: WCHS2022
+        local-dir: ./plugins
+        server-dir: ./
