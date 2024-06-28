@@ -1,0 +1,139 @@
+command /join [<text>]:
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease select a gamemode to join"
+        else if arg-1 is not "ffa":
+            send "&cInvalid gamemode selected"
+        else if {q1v1v1v1::qd::red::*} contains "%player%":
+            send "&cYou've already joined the 1v1v1v1 queue!"
+        else if {q1v1v1v1::qd::blue::*} contains "%player%":
+            send "&cYou've already joined the 1v1v1v1 queue!"
+        else if {q1v1v1v1::qd::green::*} contains "%player%":
+            send "&cYou've already joined the 1v1v1v1 queue!"
+        else if {q1v1v1v1::qd::mag::*} contains "%player%":
+            send "&cYou've already joined the 1v1v1v1 queue!"
+        else:
+            if size of {q1v1v1v1::qd::red::*} is 0:
+                send "&eJoining &l1v1v1v1"
+                add "%player%" to {q1v1v1v1::qd::red::*}
+                send "&7You've joined the queue for 1v1v1v1 as &cRED"
+            else if size of {q1v1v1v1::qd::blue::*} is 0:
+                send "&eJoining &l1v1v1v1"
+                add "%player%" to {q1v1v1v1::qd::blue::*}
+                send "&7You've joined the queue for 1v1v1v1 as &9BLUE"
+            else if size of {q1v1v1v1::qd::green::*} is 0:
+                send "&eJoining &l1v1v1v1"
+                add "%player%" to {q1v1v1v1::qd::green::*}
+                send "&7You've joined the queue for 1v1v1v1 as &aGREEN"
+            else if size of {q1v1v1v1::qd::mag::*} is 0:
+                send "&eJoining &l1v1v1v1"
+                add "%player%" to {q1v1v1v1::qd::mag::*}
+                send "&7You've joined the queue for 1v1v1v1 as &dMAGENTA"
+                if size of {q1v1v1v1::qd::mag::*} is 1: 
+                    loop {q1v1v1v1::qd::*}:
+                        send "&bGame is beginning!" to loop-value
+                        wait 1 second
+                        send "&e5" to loop-value
+                        wait 1 second
+                        send "&e4" to loop-value
+                        wait 1 second
+                        send "&e3" to loop-value
+                        wait 1 second
+                        send "&e2" to loop-value
+                        wait 1 second
+                        send "&e1" to loop-value
+
+			
+command /test:
+    trigger:
+        if size of {q1v1v1v1::qd::*} is 0:
+            if size of {q1v1v1v1::gd::mag::*} is 0:
+                send "&7Twas 0 joined now"
+                add "%player%" to {q1v1v1v1::qd::mag::*}
+                send "&7You've joined the queue for 1v1v1v1 as &dMAGENTA"
+                if size of {q1v1v1v1::qd::mag::*} is 1: 
+                    loop all players in {q1v1v1v1::qd::mag::*}:
+                        send "&bGame is beginning!" to loop-value
+                        wait 1 second
+                        send "&e5" to loop-value
+                        wait 1 second
+                        send "&e4" to loop-value
+                        wait 1 second
+                        send "&e3" to loop-value
+                        wait 1 second
+                        send "&e2" to loop-value
+                        wait 1 second
+                        send "&e1" to loop-value
+                        stop
+        else if {q1v1v1v1::gd::mag::*} is 1:
+            send "&bFull"
+
+
+
+
+command /setup [<text>] [<text>] [<text>]:
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease specify a argument."
+        if arg-1 is "setpoint":
+            if arg-2 is not set:
+                send "&3Choose one:"
+                send "&c[redmazespawn|bluemazespawn|magmazespawn|greenmazespawn|blueelderspawn|redelderspawn|magelderspawn|greenelderspawn"
+        if arg-1 is "setpoint":
+            if arg-2 is "redmazespawn":
+                set {redmazespawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        if arg-1 is "setpoint":
+            if arg-2 is "bluemazespawn":
+                set {bluemazespawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        if arg-1 is "setpoint":
+            if arg-2 is "magmazespawn":
+                set {magmazespawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        if arg-1 is "setpoint":
+            if arg-2 is "greenmazespawn":
+                set {greenmazespawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        if arg-1 is "setpoint":
+            if arg-2 is "blueelderspawn":
+                set {blueelderspawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        if arg-1 is "setpoint":
+            if arg-2 is "redelderspawn":
+                set {redelderspawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        if arg-1 is "setpoint":
+            if arg-2 is "magelderspawn":
+                set {magelderspawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        if arg-1 is "setpoint":
+            if arg-2 is "greenelderspawn":
+                set {greenelderspawn_1v1v1v1} to player's location
+                send "&cPoint set! @%player%"
+        
+
+
+
+command /testreset:
+    trigger:
+        delete {q1v1v1v1::qd::*}
+        delete {q1v1v1v1::qd::red::*}
+        delete {q1v1v1v1::qd::mag::*}
+        delete {q1v1v1v1::qd::blue::*}
+        delete {q1v1v1v1::qd::green::*}
+        clear {q1v1v1v1::qd::*}
+        clear {q1v1v1v1::qd::red::*}
+        clear {q1v1v1v1::qd::mag::*}
+        clear {q1v1v1v1::qd::blue::*}
+        clear {q1v1v1v1::qd::green::*}
+        send "&cCompleted"
+
+
+
+
+
+
+
+
+

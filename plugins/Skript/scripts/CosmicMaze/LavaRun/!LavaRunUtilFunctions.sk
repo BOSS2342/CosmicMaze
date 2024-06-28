@@ -1,0 +1,5 @@
+function lavaRunDifficultyOfPlayer(p: player) :: object:
+	loop {lavaRun::*}:
+		if {lavaRun::%loop-value%::*} contains {_p}:
+			return loop-value
+

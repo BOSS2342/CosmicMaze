@@ -1,0 +1,545 @@
+function randomizeMapCG():
+    set {_ri} to random integer between 1 and 16
+    if {_ri} is 1:
+        set {cyanGoldMap::Misty} to true
+        if world "Misty2" does not exist:
+            execute console command "/mv clone MistyMaster Misty2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Misty2 normal -g VoidGen"
+            execute console command "/mv load MistyMaster"
+        else if world "Misty2" exists:
+            stop
+    else if {_ri} is 2:
+        if world "Mirage2" does not exist:
+            set {cyanGoldMap::Mirage} to true
+            execute console command "/mv clone MirageMaster Mirage2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Mirage2 normal -g VoidGen"
+            execute console command "/mv load MirageMaster"
+        else if world "Mirage2" exists:
+            stop
+    else if {_ri} is 3:
+        if world "Meadows2" does not exist:
+            set {cyanGoldMap::Meadows} to true
+            execute console command "/mv clone MeadowsMaster Meadows2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Meadows2 normal -g VoidGen"
+            execute console command "/mv load MeadowsMaster"
+        else if world "Meadows2" exists:
+            stop
+    else if {_ri} is 4:
+        set {cyanGoldMap::Lunar} to true
+        if world "Lunar2" does not exist:
+            execute console command "/mv clone LunarMaster Lunar2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Lunar2 normal -g VoidGen"
+            execute console command "/mv load LunarMaster"
+        else if world "Lunar2" exists:
+            stop
+    else if {_ri} is 5:
+        set {cyanGoldMap::Grove} to true
+        if world "Grove2" does not exist:
+            execute console command "/mv clone GroveMaster Grove2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Grove2 normal -g VoidGen"
+            execute console command "/mv load GroveMaster"
+        else if world "Grove2" exists:
+            stop
+    else if {_ri} is 6:
+        set {cyanGoldMap::Prestige} to true
+        if world "Prestige2" does not exist:
+            execute console command "/mv clone PrestigeMaster Prestige2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Prestige2 normal -g VoidGen"
+            execute console command "/mv load PrestigeMaster"
+        else if world "Prestige2" exists:
+            stop
+    else if {_ri} is 7:
+        set {cyanGoldMap::Snowland} to true
+        if world "Snowland2" does not exist:
+            execute console command "/mv clone SnowlandMaster Snowland2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Snowland2 normal -g VoidGen"
+            execute console command "/mv load SnowlandMaster"
+        else if world "Snowland2" exists:
+            stop
+    else if {_ri} is 8:
+        set {cyanGoldMap::Highway} to true
+        if world "Highway2" does not exist:
+            execute console command "/mv clone HighwayMaster Highway2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Highway2 normal -g VoidGen"
+            execute console command "/mv load HighwayMaster"
+        else if world "Highway2" exists:
+            stop
+    else if {_ri} is 9:
+        set {cyanGoldMap::Elder} to true
+        if world "Elder2" does not exist:
+            execute console command "/mv clone ElderMaster Elder2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Elder2 normal -g VoidGen"
+            execute console command "/mv load ElderMaster"
+        else if world "Elder2" exists:
+            stop
+    else if {_ri} is 10:
+        set {cyanGoldMap::Ruins} to true
+        if world "Ruins2" does not exist:
+            execute console command "/mv clone RuinsMaster Ruins2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Ruins2 normal -g VoidGen"
+            execute console command "/mv load RuinsMaster"
+        else if world "Ruins2" exists:
+            stop
+    else if {_ri} is 11:
+        set {cyanGoldMap::Nether} to true
+        if world "Nether2" does not exist:
+            execute console command "/mv clone NetherMaster Nether2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Nether2 normal -g VoidGen"
+            execute console command "/mv load NetherMaster"
+        else if world "Nether2" exists:
+            stop
+    else if {_ri} is 12:
+        set {cyanGoldMap::Village} to true
+        if world "Village2" does not exist:
+            execute console command "/mv clone VillageMaster Village2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Village2 normal -g VoidGen"
+            execute console command "/mv load VillageMaster"
+        else if world "Village2" exists:
+            stop
+    else if {_ri} is 13:
+        set {cyanGoldMap::Mansion} to true
+        if world "Mansion2" does not exist:
+            execute console command "/mv clone MansionMaster Mansion2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Mansion2 normal -g VoidGen"
+            execute console command "/mv load MansionMaster"
+        else if world "Mansion2" exists:
+            stop
+    else if {_ri} is 14:
+        set {cyanGoldMap::Portal} to true
+        if world "Portal2" does not exist:
+            execute console command "/mv clone PortalMaster Portal2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Portal2 normal -g VoidGen"
+            execute console command "/mv load PortalMaster"
+        else if world "Portal2" exists:
+            stop
+    else if {_ri} is 15:
+        set {cyanGoldMap::Spring} to true
+        if world "Spring2" does not exist:
+            execute console command "/mv clone SpringMaster Spring2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Spring2 normal -g VoidGen"
+            execute console command "/mv load SpringMaster"
+        else if world "Spring2" exists:
+            stop
+    else if {_ri} is 16:
+        set {cyanGoldMap::DragonHollow} to true
+        if world "DragonHollow2" does not exist:
+            execute console command "/mv clone DragonHollowMaster DragonHollow2"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import DragonHollow2 normal -g VoidGen"
+            execute console command "/mv load DragonHollowMaster"
+        else if world "DragonHollow2" exists:
+            stop
+
+
+
+function randomizeMapBR():
+    set {_ri} to random integer between 1 and 16
+    if {_ri} is 1:
+        set {blueRedMap::Misty} to true
+        if world "Misty1" does not exist:
+            execute console command "/mv clone MistyMaster Misty1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Misty1 normal -g VoidGen"
+            execute console command "/mv load MistyMaster"
+        else if world "Misty1" exists:
+            stop
+    else if {_ri} is 2:
+        if world "Mirage1" does not exist:
+            set {blueRedMap::Mirage} to true
+            execute console command "/mv clone MirageMaster Mirage1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Mirage1 normal -g VoidGen"
+            execute console command "/mv load MirageMaster"
+        else if world "Mirage1" exists:
+            stop
+    else if {_ri} is 3:
+        if world "Meadows1" does not exist:
+            set {blueRedMap::Meadows} to true
+            execute console command "/mv clone MeadowsMaster Meadows1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Meadows1 normal -g VoidGen"
+            execute console command "/mv load MeadowsMaster"
+        else if world "Meadows1" exists:
+            stop
+    else if {_ri} is 4:
+        set {blueRedMap::Lunar} to true
+        if world "Lunar1" does not exist:
+            execute console command "/mv clone LunarMaster Lunar1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Lunar1 normal -g VoidGen"
+            execute console command "/mv load LunarMaster"
+        else if world "Lunar1" exists:
+            stop
+    else if {_ri} is 5:
+        set {blueRedMap::Grove} to true
+        if world "Grove1" does not exist:
+            execute console command "/mv clone GroveMaster Grove1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Grove1 normal -g VoidGen"
+            execute console command "/mv load GroveMaster"
+        else if world "Grove1" exists:
+            stop
+    else if {_ri} is 6:
+        set {blueRedMap::Prestige} to true
+        if world "Prestige1" does not exist:
+            execute console command "/mv clone PrestigeMaster Prestige1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Prestige1 normal -g VoidGen"
+            execute console command "/mv load PrestigeMaster"
+        else if world "Prestige1" exists:
+            stop
+    else if {_ri} is 7:
+        set {blueRedMap::Snowland} to true
+        if world "Snowland1" does not exist:
+            execute console command "/mv clone SnowlandMaster Snowland1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Snowland1 normal -g VoidGen"
+            execute console command "/mv load SnowlandMaster"
+        else if world "Snowland1" exists:
+            stop
+    else if {_ri} is 8:
+        set {blueRedMap::Highway} to true
+        if world "Highway1" does not exist:
+            execute console command "/mv clone HighwayMaster Highway1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Highway1 normal -g VoidGen"
+            execute console command "/mv load HighwayMaster"
+        else if world "Highway1" exists:
+            stop
+    else if {_ri} is 9:
+        set {blueRedMap::Elder} to true
+        if world "Elder1" does not exist:
+            execute console command "/mv clone ElderMaster Elder1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Elder1 normal -g VoidGen"
+            execute console command "/mv load ElderMaster"
+        else if world "Elder1" exists:
+            stop
+    else if {_ri} is 10:
+        set {blueRedMap::Ruins} to true
+        if world "Ruins1" does not exist:
+            execute console command "/mv clone RuinsMaster Ruins1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Ruins1 normal -g VoidGen"
+            execute console command "/mv load RuinsMaster"
+        else if world "Ruins1" exists:
+            stop
+    else if {_ri} is 11:
+        set {blueRedMap::Nether} to true
+        if world "Nether1" does not exist:
+            execute console command "/mv clone NetherMaster Nether1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Nether1 normal -g VoidGen"
+            execute console command "/mv load NetherMaster"
+        else if world "Nether1" exists:
+            stop
+    else if {_ri} is 12:
+        set {blueRedMap::Village} to true
+        if world "Village1" does not exist:
+            execute console command "/mv clone VillageMaster Village1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Village1 normal -g VoidGen"
+            execute console command "/mv load VillageMaster"
+        else if world "Village1" exists:
+            stop
+    else if {_ri} is 13:
+        set {blueRedMap::Mansion} to true
+        if world "Mansion1" does not exist:
+            execute console command "/mv clone MansionMaster Mansion1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Mansion1 normal -g VoidGen"
+            execute console command "/mv load MansionMaster"
+        else if world "Mansion1" exists:
+            stop
+    else if {_ri} is 14:
+        set {blueRedMap::Portal} to true
+        if world "Portal1" does not exist:
+            execute console command "/mv clone PortalMaster Portal1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Portal1 normal -g VoidGen"
+            execute console command "/mv load PortalMaster"
+        else if world "Portal1" exists:
+            stop
+    else if {_ri} is 15:
+        set {blueRedMap::Spring} to true
+        if world "Spring1" does not exist:
+            execute console command "/mv clone SpringMaster Spring1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Spring1 normal -g VoidGen"
+            execute console command "/mv load SpringMaster"
+        else if world "Spring1" exists:
+            stop
+    else if {_ri} is 16:
+        set {blueRedMap::DragonHollow} to true
+        if world "DragonHollow1" does not exist:
+            execute console command "/mv clone DragonHollowMaster DragonHollow1"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import DragonHollow1 normal -g VoidGen"
+            execute console command "/mv load DragonHollowMaster"
+        else if world "DragonHollow1" exists:
+            stop
+
+
+
+function randomizeMapPG():
+    set {_ri} to random integer between 1 and 16
+    if {_ri} is 1:
+        set {purpleGreenMap::Misty} to true
+        if world "Misty3" does not exist:
+            execute console command "/mv clone MistyMaster Misty3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Misty3 normal -g VoidGen"
+            execute console command "/mv load MistyMaster"
+        else if world "Misty3" exists:
+            stop
+    else if {_ri} is 2:
+        if world "Mirage3" does not exist:
+            set {purpleGreenMap::Mirage} to true
+            execute console command "/mv clone MirageMaster Mirage3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Mirage3 normal -g VoidGen"
+            execute console command "/mv load MirageMaster"
+        else if world "Mirage3" exists:
+            stop
+    else if {_ri} is 3:
+        if world "Meadows3" does not exist:
+            set {purpleGreenMap::Meadows} to true
+            execute console command "/mv clone MeadowsMaster Meadows3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Meadows3 normal -g VoidGen"
+            execute console command "/mv load MeadowsMaster"
+        else if world "Meadows3" exists:
+            stop
+    else if {_ri} is 4:
+        set {purpleGreenMap::Lunar} to true
+        if world "Lunar3" does not exist:
+            execute console command "/mv clone LunarMaster Lunar3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Lunar3 normal -g VoidGen"
+            execute console command "/mv load LunarMaster"
+        else if world "Lunar3" exists:
+            stop
+    else if {_ri} is 5:
+        set {purpleGreenMap::Grove} to true
+        if world "Grove3" does not exist:
+            execute console command "/mv clone GroveMaster Grove3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Grove3 normal -g VoidGen"
+            execute console command "/mv load GroveMaster"
+        else if world "Grove3" exists:
+            stop
+    else if {_ri} is 6:
+        set {purpleGreenMap::Prestige} to true
+        if world "Prestige3" does not exist:
+            execute console command "/mv clone PrestigeMaster Prestige3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Prestige3 normal -g VoidGen"
+            execute console command "/mv load PrestigeMaster"
+        else if world "Prestige3" exists:
+            stop
+    else if {_ri} is 7:
+        set {purpleGreenMap::Snowland} to true
+        if world "Snowland3" does not exist:
+            execute console command "/mv clone SnowlandMaster Snowland3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Snowland3 normal -g VoidGen"
+            execute console command "/mv load SnowlandMaster"
+        else if world "Snowland3" exists:
+            stop
+    else if {_ri} is 8:
+        set {purpleGreenMap::Highway} to true
+        if world "Highway3" does not exist:
+            execute console command "/mv clone HighwayMaster Highway3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Highway3 normal -g VoidGen"
+            execute console command "/mv load HighwayMaster"
+        else if world "Highway3" exists:
+            stop
+    else if {_ri} is 9:
+        set {purpleGreenMap::Elder} to true
+        if world "Elder3" does not exist:
+            execute console command "/mv clone ElderMaster Elder3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Elder3 normal -g VoidGen"
+            execute console command "/mv load ElderMaster"
+        else if world "Elder3" exists:
+            stop
+    else if {_ri} is 10:
+        set {purpleGreenMap::Ruins} to true
+        if world "Ruins3" does not exist:
+            execute console command "/mv clone RuinsMaster Ruins3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Ruins3 normal -g VoidGen"
+            execute console command "/mv load RuinsMaster"
+        else if world "Ruins3" exists:
+            stop
+    else if {_ri} is 11:
+        set {purpleGreenMap::Nether} to true
+        if world "Nether3" does not exist:
+            execute console command "/mv clone NetherMaster Nether3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Nether3 normal -g VoidGen"
+            execute console command "/mv load NetherMaster"
+        else if world "Nether3" exists:
+            stop
+    else if {_ri} is 12:
+        set {purpleGreenMap::Village} to true
+        if world "Village3" does not exist:
+            execute console command "/mv clone VillageMaster Village3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Village3 normal -g VoidGen"
+            execute console command "/mv load VillageMaster"
+        else if world "Village3" exists:
+            stop
+    else if {_ri} is 13:
+        set {purpleGreenMap::Mansion} to true
+        if world "Mansion3" does not exist:
+            execute console command "/mv clone MansionMaster Mansion3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Mansion3 normal -g VoidGen"
+            execute console command "/mv load MansionMaster"
+        else if world "Mansion3" exists:
+            stop
+    else if {_ri} is 14:
+        set {purpleGreenMap::Portal} to true
+        if world "Portal3" does not exist:
+            execute console command "/mv clone PortalMaster Portal3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Portal3 normal -g VoidGen"
+            execute console command "/mv load PortalMaster"
+        else if world "Portal3" exists:
+            stop
+    else if {_ri} is 15:
+        set {purpleGreenMap::Spring} to true
+        if world "Spring3" does not exist:
+            execute console command "/mv clone SpringMaster Spring3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import Spring3 normal -g VoidGen"
+            execute console command "/mv load SpringMaster"
+        else if world "Spring3" exists:
+            stop
+    else if {_ri} is 16:
+        set {purpleGreenMap::DragonHollow} to true
+        if world "DragonHollow3" does not exist:
+            execute console command "/mv clone DragonHollowMaster DragonHollow3"
+            wait 10 ticks
+            execute console command "/mvconfirm"
+            wait 20 ticks
+            execute console command "/mv import DragonHollow3 normal -g VoidGen"
+            execute console command "/mv load DragonHollowMaster"
+        else if world "DragonHollow3" exists:
+            stop
+
+
+
+
+

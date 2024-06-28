@@ -1,0 +1,214 @@
+command /devmode [<text>]:
+    trigger:
+        if {Developer::*} contains sender:
+            if arg-1 is "on":
+                if {inDevMode::%player%} is not set:
+                    send "&7You have &aENABLED&7 developer mode."
+                    set {inDevMode::%player%} to true
+                    stop
+                else if {inDevMode::%player%} is true:
+                    send "&7You're already in dev mode!"
+                    stop
+            if arg-1 is "off":
+                if {inDevMode::%player%} is true:
+                    send "&7You have &cDISABLED&7 developer mode."
+                    delete {inDevMode::%player%}
+                    stop
+                else if {inDevMode::%player%} is not set:
+                    send "&cYou're not in DevMode!"
+            else:
+                send "&cInvalid Argument! Try: [on|off]"
+        else:
+            send "&cYou're not a developer"
+
+command /developer [<text>] [<text>] [<text>] [<text>]:
+    aliases: /dev
+    trigger:
+#Only allow developers to execute command
+        set {_p} to sender
+        if {Developer::*} doesn't contain sender:   
+            send "&cYou do not have permission to access anything developer related!"
+
+#Subcommands
+        else:
+            if arg-1 is "set":
+                if arg-2 is "maindevisl":
+                    send "&eMain developer island has been set to your position!"
+                    set {mainDevIsland} to player's location
+                    stop
+                else if {devIslands::*} contains "%arg-2%":
+                    send "&aYou have set the point for the island &e%arg-2%"
+                    set {devIslands::%arg-2%} to player's location
+                    set {islandSet::%arg-2%} to true
+                    stop
+                else:
+                    send "&cIsland does not exist. Do &7/developer createisland <name>&c to create one"
+                    stop
+            if arg-1 is "createisland":
+                if arg-2 is set:
+                    add arg-2 to {devIslands::*}
+                    send "&dIsland created!"
+                    stop
+                else:
+                    send "&cPlease specify a name for the island."
+                    stop
+            if arg-1 is "island":
+                if arg-2 is not set:
+                    teleport player to {mainDevIsland}
+                    set player's gamemode to creative
+                    send "&eYou've been warped to the main developer island"
+                    stop
+                else:
+                    if {devIslands::*} contains "%arg-2%":
+                        if {islandSet::%arg-2%} is set:
+                            teleport player to {devIslands::%arg-2%}
+                            stop
+                        else:
+                            send "&cLocation for island not set."
+                            stop
+                    else:
+                        send "&cThat island doesn't exist."
+                        stop
+            if arg-1 is "islands":
+                send "&eDeveloper islands:"
+                loop {devIslands::*}:
+                    send "&7- &9%loop-value%"
+                    stop
+            if arg-1 is "removeisland":
+                if {devIslands::*} contains "%arg-2%":
+                    remove arg-2 from {devIslands::*}
+                    delete {islandSet::%arg-2%}
+                    send "&cIsland removed!"
+                    stop
+                else:
+                    send "&cIsland does not exist."
+                    stop
+            if arg-1 is "invite":
+                if {playerInvited::*} does not contain arg-2:
+                    set {_p} to arg-2 parsed as offline player
+                    add {_p} to {playerInvited::*}
+                    send "&7-----------------------" to {_p}
+                    send "&7Invite:" to {_p}
+                    send "&eYou have been invited to come to the developer's island." to {_p}
+                    send "&eDo &7/iaccept &eto accept" to {_p}
+                    send "&7-----------------------" to {_p}
+                    send "&ePlayer invite &awas successful!"
+                    stop
+                else:
+                    send "&c%arg-2% has already been invited."
+                    stop
+            else if arg-1 is "launcher":
+                give player feather named "&7Laun&lcher" with lore "&cHint: Right Click someone"
+            if arg-1 is "kick":
+                if arg-2 is set:
+                    set {_p} to arg-2 parsed as offline player
+                    if {playerInvited::*} contains arg-2:
+                        remove "%arg-2%" from {playerInvited::*}
+                        send "&cYou have been kicked from the developer islands" to {_p}
+                        send "&7Player kick &asuccess"
+                        teleport {_p} to {lobby::Main}
+                        stop
+                    else:
+                        send "&cPlayer is not invited or on the island"
+                        stop
+                else:
+                    send "&cPlease select a player to kick"
+                    loop {playerInvited::*}:
+                        send "&7%loop-value%"
+                        stop
+            if arg-1 is "spawnisland":
+                if arg-2 is set:
+                    if arg-3 is set:
+                        if arg-4 is set:
+                            set {_block} to arg-2
+                            set {_w1} to arg-3
+                            set {_w2} to arg-4
+                            set {_pz} to player's z coordinate
+                            set {_px} to player's x coordinate
+                            set {_py} to 62
+                            set {_w} to player's world
+                            teleport player to location({_px}, {_py}, {_pz}, {_w})
+                            execute player command "//cyl %{_block}% %{_w1}%,%{_w2}%"
+                            send "&a&lIsland spawned"
+                            stop
+                        else:
+                            send "&cPlease specify a second size"
+                            stop
+                    else:
+                        send "&cPlease specify the first size"
+                        stop
+                else:
+                    send "&cPlease specify a block to make the island from"
+                    stop
+            if arg-1 is "modwand":
+                give player stick named "&bModeration &e&lWand" with lore "&e&lClick a player to moderate"
+                stop
+            if arg-1 is "flywand":
+                give player feather named "&e&lFlight Beheld In Your Hand" with lore "&2&lClick a player to enable their fly"
+                stop
+            if arg-1 is "reload":
+                if arg-2 is "1":
+                    execute console command "sk reload DeveloperMode"
+                    send "Reloaded | &7DeveloperMode.sk"
+                if arg-2 is "2":
+                    execute console command "sk reload DetectionInstances/DeveloperModeInstances"
+                    send "Reloaded | &7DetectionInstances/DeveloperModeInstances"
+            if arg-1 is "to-do":
+                send "&7---------------------"
+                send "&eTo do:"
+                send "&7- &aJoining System"
+                send "&7- &aReady Up System"
+                send "&7- &cRandom Chests"
+                send "&7- &cKits"
+                send "&7- &cCrafting Phase"
+                send "&7- &cDeath Management"
+                send "&7----------------------"
+                    
+            else:
+                send "&cInvalied Argument! Try: /developer [set|createisland|removeisland|islands|invite|kick|spawnisland|modwand|flywand|launcher|to-do] <text>"
+
+command /iaccept:
+    trigger:
+        set {_s} to sender
+        if {playerInvited::*} contains player:
+            send "&e&lInvite accepted!"
+            send "&7Warping in &43"
+            wait 1 second
+            send "&7Warping in &e2"
+            wait 1 second
+            send "&7Warping in &a1"
+            teleport player to {mainDevIsland}
+            send "&b&lWelcome to the developer islands!"
+            wait 0.5 seconds
+            set sender's gamemode to adventure
+            make {_s} fly
+            
+        else:
+            send "Unknown command. Type ""/help"" for help."
+
+
+on player world change:
+    set {_w} to event-world
+    if {Developer::*} doesn't contain player:
+        if {playerInvited::*} doesn't contain player:
+            if {_w} contains "Developers":
+                wait 1 second
+                execute console command "sudo %player% l"
+                send "Unable to teleport to world. &7Reason: &cWorld exclusive to developers!"
+        else:
+            stop
+
+
+
+
+command /freeme:
+    trigger:
+        set {moderating::%player%} to false
+        clear {moderating::%player%::*}
+        send "ok"
+
+
+
+
+
+

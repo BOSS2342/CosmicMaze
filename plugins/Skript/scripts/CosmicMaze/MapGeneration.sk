@@ -1,0 +1,54 @@
+function getTeamOfPlayerGC(p: player) :: object:
+	loop {cyanGoldMap::*}:
+		broadcast "%loop-index%"
+		if {cyanGoldMap::%loop-index%} is true:
+			return loop-index
+		else:
+			return "false"
+
+function getTeamOfPlayerBR(p: player) :: object:
+	loop {blueRedMap::*}:
+		broadcast "%loop-index%"
+		if {blueRedMap::%loop-index%} is true:
+			return loop-index
+		else:
+			return "false"
+
+function getTeamOfPlayerPG(p: player) :: object:
+	loop {purpleGreenMap::*}:
+		broadcast "%loop-index%"
+		if {purpleGreenMap::%loop-index%} is true:
+			return loop-index
+		else:
+			return "false"
+
+
+
+
+
+# Command to randomize maps based on given text argument
+command /randommap [<text>]:
+    permission: op
+    trigger:
+        if arg-1 is "cyanGold":
+            randomizeMapCG()
+        else if arg-1 is "purpleGreen":
+            randomizeMapPG()
+        else if arg-1 is "blueRed":
+            randomizeMapBR()
+        else:
+            send "&cUnknown Function Specified"
+
+
+
+command /clearallmaps:
+	trigger:
+		delete {purpleGreenMap::*}
+		delete {blueRedMap::*}
+		delete {cyanGoldMap::*}
+		send "Complete"
+
+
+
+
+

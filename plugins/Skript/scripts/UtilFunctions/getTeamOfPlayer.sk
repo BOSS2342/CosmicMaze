@@ -1,0 +1,4 @@
+function getTeamOfPlayer(p: player) :: object:
+	loop {teams::*}:
+		if {teams::%loop-value%::*} contains {_p}:
+			return loop-value

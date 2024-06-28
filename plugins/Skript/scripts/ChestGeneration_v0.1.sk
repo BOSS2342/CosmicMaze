@@ -1,0 +1,26 @@
+command /testChestGens:
+    aliases: tcg
+    permission: op
+    trigger:
+        set {_count} to 0 
+        loop blocks in the region "chestgentest":
+           
+            if "%type of loop-block%" is "magenta wool block":
+
+                set {_targetBlock} to loop-block 
+                set block at {_targetBlock} to chest
+                
+                set slot 1 of {_targetBlock}'s inventory to diamond sword 
+
+
+            else if "%type of loop-block%" is "black wool block":
+                set {_targetBlock} to loop-block 
+                set block at {_targetBlock} to chest
+                
+                set slot 1 of {_targetBlock}'s inventory to iron chestplate
+
+            else:
+                stop
+                
+
+        send "There are %{_count}% wool in the region" to player

@@ -1,0 +1,49 @@
+command /spectate [<player>]:
+	permission: op
+	trigger:
+		if arg-1 is not set:
+			send "&cYou did not specify a player to enable spectator for." to sender
+			
+		if arg-1 is set:
+			
+			if {spectateEnabled::%arg-1%} is true:
+				execute console command "/gamemode survival %arg-1%"
+				make arg-1 execute "/l"
+				
+				set {spectateEnabled::%arg-1%} to false
+				send "&cYou're no longer spectating a match." to arg-1
+				
+			else if {spectateEnabled::%arg-1%} is false:
+				send "working!?" to player
+				set {_deadPlayerTeam} to getTeamOfPlayer(arg-1)
+				
+				loop all players:
+					set {_teammateTeam} to getTeamOfPlayer(loop-value)
+					if getTeamOfPlayer(loop-value) is getTeamOfPlayer(arg-1):
+						if loop-value is not arg-1:
+							execute console command "/teleport %arg-1% %loop-value%"
+							make arg-1 execute "/vanish"
+							
+							set {spectateEnabled::%arg-1%} to true
+							send "&cYou're now spectating a match." to arg-1
+							stop
+
+command /testSpec: 
+	permission: op
+	trigger:
+		send "%{spectateEnabled::%player%}%" to player
+		send "%getTeamOfPlayer(player)%"
+
+
+on pickup:
+    if {spectateEnabled::%player%} is true:
+        cancel event
+on drop:
+    if {spectateEnabled::%player%} is true:
+        cancel event
+on right click:
+    if {spectateEnabled::%player%} is true:
+        cancel event
+on left click:
+    if {spectateEnabled::%player%} is true:
+        cancel event

@@ -1,0 +1,287 @@
+command /msg <player> <text>:
+    trigger:
+        if arg-1 is set:
+            if arg-1 is a player:
+                message "&a[PM] &7%player% to&b %arg-1%&r: %arg-2%" to arg-1
+                set {lastMessaged::%arg-1%} to player
+                send "&a[PM] &7You to &b%arg-1%&r: %arg-2%" to player
+            else:
+                send "&cPlayer %arg-1% not found." to player
+        else:
+            send "&cIncorrect usage of command! Try: /msg (player) (message)" to player
+
+command /reply <text>:
+    trigger:
+        if {lastMessaged::%player%} is set:
+            message "%player% -> {lastMessaged::%player%}: %arg-1%" to {lastMessaged::%player%}
+            send "&aYou -> {lastMessaged::%player%}: %arg-1%" to player
+        else:
+            send "&cNo one to reply to." to player
+command /r <text>:
+    trigger:
+        if {lastMessaged::%player%} is set:
+            message "%player% -> {lastMessaged::%player%}: %arg-1%" to {lastMessaged::%player%}
+            send "&aYou -> {lastMessaged::%player%}: %arg-1%" to player
+        else:
+            send "&cNo one to reply to." to player
+
+
+
+
+
+command /sp <text>:
+    trigger:
+        if player is not op:
+            send "&cThis command is unavailable."
+            stop
+        else:
+            teleport player to {warp::%arg-1%}
+            send "&7You have been warped to:&6 %arg-1%"
+command /setsp <text>:
+    trigger:
+        if player is not op:
+            send "&cThis command is unavailable."
+            stop
+        else:
+            send "&6Saving warp..."
+            wait 2 seconds
+            set {warp::%arg-1%} to location of player
+            send "&bWarp save complete!"
+command /delsp <text>:
+    trigger:
+        if player is not op:
+            send "&cThis command is unavailable." to player
+            stop
+        if arg-1 is not set:
+            send "&cPlease specify a warp to delete." to player
+        else if {warp::%arg-1%} is not set:
+            send "&cWarp '%arg-1%' does not exist." to player
+        else:
+            send "&6Removing warp: %arg-1%..." to player
+            wait 1.3 seconds
+            delete {warp::%arg-1%}
+            send "&7Warp '%arg-1%' has been removed!" to player
+
+
+command /lobby [<text>]:
+    trigger:
+        if {inGame::%player%} is true:
+            send "&cCommand cannot be used in games!"
+            stop
+        else if {settings::safetylobby::%player%} is true:
+            if {settings::safetylobby::%player%::*} is less than 1:
+                send "&cPlease type again to confirm"
+                add 1 to {settings::safetylobby::%player%::*}
+            else:
+                if arg-1 is set:
+                    if {lobby::%arg-1%} is set:
+                        teleport player to {lobby::%arg-1%}
+                        send "&7You have been moved to the lobby: &6%arg-1%" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cLobby &6%arg-1% &cdoes not exist." to player
+                else:
+                    if {lobby::Main} is set:
+                        teleport player to {lobby::Main}
+                        send "&7You have been moved to the lobby: &6Main" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cThe main lobby is not set." to player
+        else:
+            if arg-1 is set:
+                if {lobby::%arg-1%} is set:
+                    teleport player to {lobby::%arg-1%}
+                    send "&7You have been moved to the lobby: &6%arg-1%" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cLobby &6%arg-1% &cdoes not exist." to player
+            else:
+                if {lobby::Main} is set:
+                    teleport player to {lobby::Main}
+                    send "&7You have been moved to the lobby: &6Main" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cThe main lobby is not set." to player
+
+command /hub [<text>]:
+    trigger:
+        if {inGame::%player%} is true:
+            send "&cCommand cannot be used in games!"
+            stop
+        else if {settings::safetylobby::%player%} is true:
+            if {settings::safetylobby::%player%::*} is less than 1:
+                send "&cPlease type again to confirm"
+                add 1 to {settings::safetylobby::%player%::*}
+            else:
+                if arg-1 is set:
+                    if {lobby::%arg-1%} is set:
+                        teleport player to {lobby::%arg-1%}
+                        send "&7You have been moved to the lobby: &6%arg-1%" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cLobby &6%arg-1% &cdoes not exist." to player
+                else:
+                    if {lobby::Main} is set:
+                        teleport player to {lobby::Main}
+                        send "&7You have been moved to the lobby: &6Main" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cThe main lobby is not set." to player
+        else:
+            if arg-1 is set:
+                if {lobby::%arg-1%} is set:
+                    teleport player to {lobby::%arg-1%}
+                    send "&7You have been moved to the lobby: &6%arg-1%" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cLobby &6%arg-1% &cdoes not exist." to player
+            else:
+                if {lobby::Main} is set:
+                    teleport player to {lobby::Main}
+                    send "&7You have been moved to the lobby: &6Main" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cThe main lobby is not set." to player
+
+
+command /l [<text>]:
+    trigger:
+        if {inGame::%player%} is true:
+            send "&cCommand cannot be used in games!"
+            stop
+        else if {settings::safetylobby::%player%} is true:
+            if {settings::safetylobby::%player%::*} is less than 1:
+                send "&cPlease type again to confirm"
+                add 1 to {settings::safetylobby::%player%::*}
+            else:
+                if arg-1 is set:
+                    if {lobby::%arg-1%} is set:
+                        teleport player to {lobby::%arg-1%}
+                        send "&7You have been moved to the lobby: &6%arg-1%" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cLobby &6%arg-1% &cdoes not exist." to player
+                else:
+                    if {lobby::Main} is set:
+                        teleport player to {lobby::Main}
+                        send "&7You have been moved to the lobby: &6Main" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cThe main lobby is not set." to player
+        else:
+            if arg-1 is set:
+                if {lobby::%arg-1%} is set:
+                    teleport player to {lobby::%arg-1%}
+                    send "&7You have been moved to the lobby: &6%arg-1%" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cLobby &6%arg-1% &cdoes not exist." to player
+            else:
+                if {lobby::Main} is set:
+                    teleport player to {lobby::Main}
+                    send "&7You have been moved to the lobby: &6Main" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cThe main lobby is not set." to player
+
+command /spawn [<text>]:
+    trigger:
+        if {inGame::%player%} is true:
+            send "&cCommand cannot be used in games!"
+            stop
+        else if {settings::safetylobby::%player%} is true:
+            if {settings::safetylobby::%player%::*} is less than 1:
+                send "&cPlease type again to confirm"
+                add 1 to {settings::safetylobby::%player%::*}
+            else:
+                if arg-1 is set:
+                    if {lobby::%arg-1%} is set:
+                        teleport player to {lobby::%arg-1%}
+                        send "&7You have been moved to the lobby: &6%arg-1%" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cLobby &6%arg-1% &cdoes not exist." to player
+                else:
+                    if {lobby::Main} is set:
+                        teleport player to {lobby::Main}
+                        send "&7You have been moved to the lobby: &6Main" to player
+                        wait 0.3 seconds
+                        launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                    else:
+                        send "&cThe main lobby is not set." to player
+        else:
+            if arg-1 is set:
+                if {lobby::%arg-1%} is set:
+                    teleport player to {lobby::%arg-1%}
+                    send "&7You have been moved to the lobby: &6%arg-1%" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cLobby &6%arg-1% &cdoes not exist." to player
+            else:
+                if {lobby::Main} is set:
+                    teleport player to {lobby::Main}
+                    send "&7You have been moved to the lobby: &6Main" to player
+                    wait 0.3 seconds
+                    launch ball large colored red, purple and white fading to light green and black at player's location with duration 1
+                else:
+                    send "&cThe main lobby is not set." to player
+
+
+# Command to set a lobby at the player's current location
+command /setlobby <text>:
+    trigger:
+        if player is not op:
+            send "&cThis command is unavailable" to player
+        else:
+            set {lobby::%arg-1%} to location of player
+            add "%arg-1%" to {lobby::*}
+            send "&bSaved lobby: &3%arg-1%" to player
+
+# Command to delete a specified lobby
+command /dellobby <text>:
+    trigger:
+        if player is not op:
+            send "&cThis command is unavailable" to player
+        else:
+            if {lobby::%arg-1%} is set:
+                delete {lobby::%arg-1%}
+                remove "%arg-1%" from {lobby::*}
+                send "&2Success! Lobby &6%arg-1% &2has been removed." to player
+            else:
+                send "&cLobby &6%arg-1% &cdoes not exist." to player
+
+
+command /lobbies:
+    trigger:
+        if {lobby::*} is set:
+            send "&6List of Lobby Locations:" to player
+            loop {lobby::*}:
+                send "&a- %loop-index%: &c%{lobby::%loop-value%}%" to player
+        else:
+            send "&cNo lobbies have been set." to player
+
+
+on join:
+    teleport player to {lobby::Main}
+
+
+
+
+
+
+
+

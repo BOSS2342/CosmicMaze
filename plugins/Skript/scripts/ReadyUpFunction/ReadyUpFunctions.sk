@@ -1,0 +1,161 @@
+#Gold Ready up function
+
+function goldCyanReady():
+    if {cyanTeamReady} is true:
+        if {goldTeamReady} is true:
+            set {_pos1} to location(-5.5, 66, -3.5, world "GoldMaze")
+            set {_pos2} to location(-5.5, 65, 4.5, world "GoldMaze")
+            send "&e&lGame is starting" to {teams::gold::*}
+            send title "&eStarting In" with subtitle "&a5" to {teams::gold::*}
+            set blocks within {_pos1} and {_pos2} to red stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&24" to {teams::gold::*}
+            set blocks within {_pos1} and {_pos2} to orange stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&63" to {teams::gold::*}
+            set blocks within {_pos1} and {_pos2} to yellow stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&e2" to {teams::gold::*}
+            set blocks within {_pos1} and {_pos2} to lime stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&c1" to {teams::gold::*}
+            set blocks within {_pos1} and {_pos2} to green stained glass
+            wait 1 second
+            set blocks within {_pos1} and {_pos2} to air
+            send title "&eGo Go Go" to {teams::gold::*}
+            send "&a&lGo Go Go" to {teams::gold::*}
+
+#Cyan Ready up function
+
+function cyanGoldReady():
+    if {cyanTeamReady} is true:
+        if {goldTeamReady} is true:
+            set {_pos1} to location(-5.5, 66, -3.5, world "CyanMaze")
+            set {_pos2} to location(-5.5, 65, 4.5, world "CyanMaze")
+            send "&e&lGame is starting" to {teams::cyan::*}
+            send title "&eStarting In" with subtitle "&a5" to {teams::cyan::*}
+            set blocks within {_pos1} and {_pos2} to red stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&24" to {teams::cyan::*}
+            set blocks within {_pos1} and {_pos2} to orange stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&63" to {teams::cyan::*}
+            set blocks within {_pos1} and {_pos2} to yellow stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&e2" to {teams::cyan::*}
+            set blocks within {_pos1} and {_pos2} to green stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&c1" to {teams::cyan::*}
+            set blocks within {_pos1} and {_pos2} to lime stained glass
+            wait 1 second
+            set blocks within {_pos1} and {_pos2} to air
+            send title "&eGo Go Go" to {teams::cyan::*}
+            send "&a&lGo Go Go" to {teams::cyan::*}
+
+#Blue Ready up function
+
+function blueRedReady():
+    if {blueTeamReady} is true:
+        if {redTeamReady} is true:
+            set {_pos1} to location(-5.5, 66, -3.5, world "BlueMaze")
+            set {_pos2} to location(-5.5, 65, 4.5, world "BlueMaze")
+            send "&e&lGame is starting" to {teams::blue::*}
+            send title "&eStarting In" with subtitle "&a5" to {teams::blue::*}
+            set blocks within {_pos1} and {_pos2} to red stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&24" to {teams::blue::*}
+            set blocks within {_pos1} and {_pos2} to orange stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&63" to {teams::blue::*}
+            set blocks within {_pos1} and {_pos2} to yellow stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&e2" to {teams::blue::*}
+            set blocks within {_pos1} and {_pos2} to green stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&c1" to {teams::blue::*}
+            set blocks within {_pos1} and {_pos2} to lime stained glass
+            wait 1 second
+            set blocks within {_pos1} and {_pos2} to air
+            send title "&eGo Go Go" to {teams::blue::*}
+            send "&a&lGo Go Go" to {teams::blue::*}
+
+#Red Ready up function
+
+function redBlueReady():
+    if {blueTeamReady} is true:
+        if {redTeamReady} is true:
+            set {_pos1} to location(-5.5, 66, -3.5, world "RedMaze")
+            set {_pos2} to location(-5.5, 65, 4.5, world "RedMaze")
+            send "&e&lGame is starting" to {teams::red::*}
+            send title "&eStarting In" with subtitle "&a5" to {teams::red::*}
+            set blocks within {_pos1} and {_pos2} to red stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&24" to {teams::red::*}
+            set blocks within {_pos1} and {_pos2} to orange stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&63" to {teams::red::*}
+            set blocks within {_pos1} and {_pos2} to yellow stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&e2" to {teams::red::*}
+            set blocks within {_pos1} and {_pos2} to lime stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&c1" to {teams::red::*}
+            set blocks within {_pos1} and {_pos2} to green stained glass
+            wait 1 second
+            set blocks within {_pos1} and {_pos2} to air
+            send title "&eGo Go Go" to {teams::red::*}
+            send "&a&lGo Go Go" to {teams::red::*}
+
+#Purple ready up function
+
+function purpleGreenReady():
+    if {purpleTeamReady} is true:
+        if {greenTeamReady} is true:
+            set {_pos1} to location(-5.5, 66, -3.5, world "PurpleMaze")
+            set {_pos2} to location(-5.5, 65, 4.5, world "PurpleMaze")
+            send "&e&lGame is starting" to {teams::purple::*}
+            send title "&eStarting In" with subtitle "&a5" to {teams::purple::*}
+            set blocks within {_pos1} and {_pos2} to red stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&24" to {teams::purple::*}
+            set blocks within {_pos1} and {_pos2} to orange stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&63" to {teams::purple::*}
+            set blocks within {_pos1} and {_pos2} to yellow stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&e2" to {teams::purple::*}
+            set blocks within {_pos1} and {_pos2} to lime stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&c1" to {teams::purple::*}
+            set blocks within {_pos1} and {_pos2} to green stained glass
+            wait 1 second
+            set blocks within {_pos1} and {_pos2} to air
+            send title "&eGo Go Go" to {teams::purple::*}
+            send "&a&lGo Go Go" to {teams::purple::*}
+
+#Green Ready up function
+
+function greenPurpleReady():
+    if {purpleTeamReady} is true:
+        if {greenTeamReady} is true:
+            set {_pos1} to location(-5.5, 66, -3.5, world "GreenMaze")
+            set {_pos2} to location(-5.5, 65, 4.5, world "GreenMaze")
+            send "&e&lGame is starting" to {teams::green::*}
+            send title "&eStarting In" with subtitle "&a5" to {teams::green::*}
+            set blocks within {_pos1} and {_pos2} to red stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&24" to {teams::green::*}
+            set blocks within {_pos1} and {_pos2} to orange stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&63" to {teams::green::*}
+            set blocks within {_pos1} and {_pos2} to yellow stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&e2" to {teams::green::*}
+            set blocks within {_pos1} and {_pos2} to lime stained glass
+            wait 1 second
+            send title "&eStarting In" with subtitle "&c1" to {teams::green::*}
+            set blocks within {_pos1} and {_pos2} to green stained glass
+            wait 1 second
+            set blocks within {_pos1} and {_pos2} to air
+            send title "&eGo Go Go" to {teams::green::*}
+            send "&a&lGo Go Go" to {teams::green::*}

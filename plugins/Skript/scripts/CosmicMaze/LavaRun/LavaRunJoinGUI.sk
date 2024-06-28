@@ -1,0 +1,17 @@
+function lavaRunLobbySelectorGUI(p: player,):
+    set {_gui} to chest inventory with 3 rows named "&6&lLava Run" 
+
+    #If too many players this could look bad
+    #So I set it to a player count insted with
+    #size of {lavaRun::easy::*}
+    set slot 11 of {_gui} to lime wool named "&aEasy" with lore "&7Playing: %size of {lavaRun::easy::*}%"
+    set slot 13 of {_gui} to yellow wool named "&eMedium" with lore "&7Playing: %size of {lavaRun::medium::*}%"
+    set slot 15 of {_gui} to red wool named "&4Hard" with lore "&7Playing: %size of {lavaRun::hard::*}%"
+    set slot 26 of {_gui} to barrier named "&cClose"
+
+    open {_gui} to {_p}
+
+command /lavaRunLobbySelector <player>:
+    permission: op
+    trigger:
+        lavaRunLobbySelectorGUI(arg-1)

@@ -1,0 +1,419 @@
+# party-system.sk
+
+# Initialization of variables
+variables:
+    {party::%player%} = false
+    {partyLeader::%player%} = false
+    {partyMembers::*} = false
+
+command /p [<text>] [<text>] [<text>]:
+    trigger:
+        # Handle /party create
+        if arg-1 is "create":
+            if {party::%player%} is false:
+                set {party::%player%} to true
+                set {partyLeader::%player%} to true
+                add player to {partyMembers::%player%::*}
+                send "&7Creating party..."
+                wait 1.2 seconds
+                send "&eYou have created a party!"
+            else if {party::%player%} is not set:
+                set {party::%player%} to true
+                set {partyLeader::%player%} to true
+                add player to {partyMembers::%player%::*}
+                send "&aYou have created a party!"
+            else:
+                send "&cYou are already in a party!"
+        
+        # Handle /party invite <player>
+        else if arg-1 is "invite":
+            if {partyLeader::%player%} is true:
+                if arg-2 is set:
+                    if {party::%arg-2%} is not set:
+                        set {_invited} to arg-2
+                        send "&7You have invited %arg-2% to the party!"
+                        execute console command "/consolemsg %arg-2% &6%player% invited you to their party!"
+                        set {partyInvite::%arg-2%} to player
+                    else:
+                        send "&c%arg-2% is already in a party!"
+                else:
+                    send "&cYou must specify a player to invite!"
+            else:
+                send "&cOnly the party leader can invite players!"
+        
+        # Handle /party accept
+        else if arg-1 is "accept":
+            if {partyInvite::%player%} is set:
+                set {_leader} to {partyInvite::%player%}
+                add player to {partyMembers::%{_leader}%::*}
+                set {party::%player%} to true
+                send "&aYou have joined %{_leader}%'s party!"
+                send "&a%player% has joined the party!" to {_leader}
+                delete {partyInvite::%player%}
+                set {partyLeader::%player%} to {_leader}
+            else:
+                send "&cYou have no pending party invites!"
+        
+        # Handle /party leave
+        else if arg-1 is "leave":
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is true:
+                    loop {partyMembers::%player%::*}:
+                        send "&cThe party has been disbanded!" to loop-value
+                        delete {party::%loop-value%}
+                        set {partyLeader::%loop-value%} to false
+                    delete {partyMembers::%player%::*}
+                else:
+                    set {_leader} to {partyLeader::%player%}
+                    remove player from {partyMembers::%{_leader}%::*}
+                    delete {party::%player%}
+                    send "&aYou have left the party!"
+            else:
+                send "&cYou are not in a party!"
+        
+        # Handle /party list
+        else if arg-1 is "list":
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is true:
+                    send "&aParty Members:"
+                    loop {partyMembers::%player%::*}:
+                        send "  &6- %loop-value%"
+                else:
+                    send "&aParty Members:"
+                    loop {partyMembers::%{partyLeader::%player%}%::*}:
+                        send "  &6- %loop-value%"
+            else:
+                send "&cYou are not in a party!"
+        
+        # Handle /party promote <player>
+        else if arg-1 is "promote":
+            if {partyLeader::%player%} is true:
+                if arg-2 is set:
+                    set {_isInParty} to false
+                    loop {partyMembers::%player%::*}:
+                        if loop-value is arg-2:
+                            set {_isInParty} to true
+                            stop loop
+                    if {_isInParty} is true:
+                        delete {partyLeader::%player%}
+                        set {partyLeader::%arg-2%} to true
+                        execute console command "/consolemsg %arg-2% You have been promoted to party leader!"
+                        send "&4You're no longer party leader."
+                    else:
+                        send "&c%arg-2% is not in your party!"
+                else:
+                    send "&cYou must specify a player to promote!"
+            else:
+                send "&cOnly the party leader can promote players!"
+        
+        # Handle /party kick <player>
+        else if arg-1 is "kick":
+            if {partyLeader::%player%} is true:
+                if arg-2 is set:
+                    set {_isInParty} to false
+                    loop {partyMembers::%player%::*}:
+                        if loop-value is arg-2:
+                            set {_isInParty} to true
+                            stop loop
+                    if {_isInParty} is true:
+                        remove arg-2 from {partyMembers::%player%::*}
+                        delete {party::%arg-2%}
+                        send "&aYou have kicked %arg-2% from the party!"
+                        send "&cYou have been kicked from %player%'s party!" to arg-2
+                    else:
+                        send "&c%arg-2% is not in your party!"
+                else:
+                    send "&cYou must specify a player to kick!"
+            else:
+                send "&cOnly the party leader can kick players!"
+        
+        # Handle /party deny
+        else if arg-1 is "deny":
+            if {partyInvite::%player%} is set:
+                delete {partyInvite::%player%}
+                send "&aYou have denied the party invite."
+            else:
+                send "&cYou have no pending party invites!"
+        else if arg-1 is "warp":
+            if player is not op:
+                send "&cNo"
+                stop
+            if {party::%player%} is not set:
+                send "&cYou're not in a party."
+            if {party::%player%} is false:
+                send "&cYou're not in a party."
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is not set:
+                    send "&cYou're not the leader of the party."
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is true:
+                    send "&cWarping..."
+                    wait 1 seconds
+                    loop {partyMembers::%player%::*}:
+                        teleport loop-value to player
+                    send "&3Your party leader has warped you to them!" to loop-value
+                    send "&3Warp complete."
+        # Handle unknown commands
+        else:
+            send "&cUnknown subcommand! Available subcommands: create, invite, accept, leave, list, promote, kick, deny."
+command /partyreset:
+    trigger:
+        if player is not op:
+            send "You are not allowed to use this command"
+        else if player is op:
+            send "&cResetting..."
+            delete {party::*}
+            delete {partyLeader::*}
+            delete {partyMembers::*}
+            delete {partyInvite::*}
+            wait 1.5 seconds
+            send "&cParties reset!"
+
+on command:
+    if {party::%player%} is set:  // Check if the player is in a party
+        if {partyLeader::%player%} is true:  // Check if the player is the leader of the party
+            if command begins with "/queue":  // Check if the command starts with "/queue"
+                loop {partyMembers::%player%::*}:  // Loop through all members of the party
+                    // Here, loop-value represents each member of the party
+                    make loop-value execute command "/queue"
+
+
+
+on player world change:
+    if {party::%player%} is set:
+        if {partyLeader::%player%} is true:
+            loop {partyMembers::%player%::*}:
+                teleport loop-value to player
+on player teleport:
+    if {party::%player%} is set:
+        if {partyLeader::%player%} is true:
+            loop {partyMembers::%player%::*}:
+                teleport loop-value to player
+
+
+command /consolemsg <player> <text>:
+    trigger:
+        if sender is not console:
+            send "&cNo..."
+        else if sender is console:
+            send "Executed"
+            send "%arg-2%" to arg-1
+
+
+
+
+command /pc [<text>]:
+    trigger:
+        if {party::%player%} is not set:
+            send "&cYou're not in a party."
+        if {party::%player%} is false:
+            send "&cYou're not in a party."
+        else:
+            if arg-1 is not set:
+                send "&cPlease specify a message to send." to player
+            else:
+                if {partyLeader::%player%} is true:
+                    loop {partyMembers::%player%::*}:
+                        send "&7[&cParty Leader&7] &r%player%: %arg-1%" to loop-value
+                else:
+                    set {_leader} to {partyLeader::%player%}
+                    loop {partyMembers::%{_leader}%::*}:
+                        send "&b[&7Party Chat&b] &r%player%: %arg-1%" to loop-value
+
+on chat:
+    if message starts with "@":
+        cancel event
+        if {party::%player%} is not set:
+            send "&cYou're not in a party."
+        if {party::%player%} is false:
+            send "&cYou're not in a party."
+        else:
+            if message is "@ ":
+                send "&cPlease specify a message to send."
+            if message is "@":
+                send "&cPlease specify a message to send."
+            else:
+                if {partyLeader::%player%} is true:
+                    replace "@" with "" in message
+                    loop {partyMembers::%player%::*}:
+                        send "&7[&cParty Leader&7] &r%player%: %message%" to loop-value
+                else:
+                    replace "@" with "" in message
+                    set {_leader} to {partyLeader::%player%}
+                    loop {partyMembers::%{_leader}%::*}:
+                        send "&b[&7Party Chat&b] &r%player%: %message%" to loop-value
+
+
+        
+
+
+
+
+command /party [<text>] [<text>] [<text>]:
+    trigger:
+        # Handle /party create
+        if arg-1 is "create":
+            if {party::%player%} is false:
+                set {party::%player%} to true
+                set {partyLeader::%player%} to true
+                add player to {partyMembers::%player%::*}
+                send "&7Creating party..."
+                wait 1.2 seconds
+                send "&eYou have created a party!"
+            else if {party::%player%} is not set:
+                set {party::%player%} to true
+                set {partyLeader::%player%} to true
+                add player to {partyMembers::%player%::*}
+                send "&aYou have created a party!"
+            else:
+                send "&cYou are already in a party!"
+        
+        # Handle /party invite <player>
+        else if arg-1 is "invite":
+            if {partyLeader::%player%} is true:
+                if arg-2 is set:
+                    if {party::%arg-2%} is not set:
+                        set {_invited} to arg-2
+                        send "&7You have invited %arg-2% to the party!"
+                        execute console command "/consolemsg %arg-2% &6%player% invited you to their party!"
+                        set {partyInvite::%arg-2%} to player
+                    else:
+                        send "&c%arg-2% is already in a party!"
+                else:
+                    send "&cYou must specify a player to invite!"
+            else:
+                send "&cOnly the party leader can invite players!"
+        
+        # Handle /party accept
+        else if arg-1 is "accept":
+            if {partyInvite::%player%} is set:
+                set {_leader} to {partyInvite::%player%}
+                add player to {partyMembers::%{_leader}%::*}
+                set {party::%player%} to true
+                send "&aYou have joined %{_leader}%'s party!"
+                send "&a%player% has joined the party!" to {_leader}
+                delete {partyInvite::%player%}
+                set {partyLeader::%player%} to {_leader}
+            else:
+                send "&cYou have no pending party invites!"
+        
+        # Handle /party leave
+        else if arg-1 is "leave":
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is true:
+                    loop {partyMembers::%player%::*}:
+                        send "&cThe party has been disbanded!" to loop-value
+                        delete {party::%loop-value%}
+                        set {partyLeader::%loop-value%} to false
+                    delete {partyMembers::%player%::*}
+                else:
+                    set {_leader} to {partyLeader::%player%}
+                    remove player from {partyMembers::%{_leader}%::*}
+                    delete {party::%player%}
+                    send "&aYou have left the party!"
+            else:
+                send "&cYou are not in a party!"
+        
+        # Handle /party list
+        else if arg-1 is "list":
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is true:
+                    send "&aParty Members:"
+                    loop {partyMembers::%player%::*}:
+                        send "  &6- %loop-value%"
+                else:
+                    send "&aParty Members:"
+                    loop {partyMembers::%{partyLeader::%player%}%::*}:
+                        send "  &6- %loop-value%"
+            else:
+                send "&cYou are not in a party!"
+        
+        # Handle /party promote <player>
+        else if arg-1 is "promote":
+            if {partyLeader::%player%} is true:
+                if arg-2 is set:
+                    set {_isInParty} to false
+                    loop {partyMembers::%player%::*}:
+                        if loop-value is arg-2:
+                            set {_isInParty} to true
+                            stop loop
+                    if {_isInParty} is true:
+                        delete {partyLeader::%player%}
+                        set {partyLeader::%arg-2%} to true
+                        execute console command "/consolemsg %arg-2% You have been promoted to party leader!"
+                        send "&4You're no longer party leader."
+                    else:
+                        send "&c%arg-2% is not in your party!"
+                else:
+                    send "&cYou must specify a player to promote!"
+            else:
+                send "&cOnly the party leader can promote players!"
+        
+        # Handle /party kick <player>
+        else if arg-1 is "kick":
+            if {partyLeader::%player%} is true:
+                if arg-2 is set:
+                    set {_isInParty} to false
+                    loop {partyMembers::%player%::*}:
+                        if loop-value is arg-2:
+                            set {_isInParty} to true
+                            stop loop
+                    if {_isInParty} is true:
+                        remove arg-2 from {partyMembers::%player%::*}
+                        delete {party::%arg-2%}
+                        send "&aYou have kicked %arg-2% from the party!"
+                        send "&cYou have been kicked from %player%'s party!" to arg-2
+                    else:
+                        send "&c%arg-2% is not in your party!"
+                else:
+                    send "&cYou must specify a player to kick!"
+            else:
+                send "&cOnly the party leader can kick players!"
+        
+        # Handle /party deny
+        else if arg-1 is "deny":
+            if {partyInvite::%player%} is set:
+                delete {partyInvite::%player%}
+                send "&aYou have denied the party invite."
+            else:
+                send "&cYou have no pending party invites!"
+        else if arg-1 is "warp":
+            if player is not op:
+                send "&cNo"
+            if {party::%player%} is not set:
+                send "&cYou're not in a party."
+            if {party::%player%} is false:
+                send "&cYou're not in a party."
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is not set:
+                    send "&cYou're not the leader of the party."
+            if {party::%player%} is true:
+                if {partyLeader::%player%} is true:
+                    send "&cWarping..."
+                    wait 1 seconds
+                    loop {partyMembers::%player%::*}:
+                        teleport loop-value to player
+                    send "&3Your party leader has warped you to them!" to loop-value
+                    send "&3Warp complete."
+        # Handle unknown commands
+        else:
+            send "&cUnknown subcommand! Available subcommands: create, invite, accept, leave, list, promote, kick, deny."
+
+
+
+on chat:
+    loop all players:
+        if {pmdisable::%loop-player%} is set:
+            if {pmdisable::%loop-player%} is true:
+                remove loop-player from recipients
+
+command /pm [<text>]:
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease specify [on|off]"
+        if arg-1 is "on":
+            set {pmdisable::%player%} to false
+            send "&aMessages enabled"
+        if arg-1 is "off":
+            set {pmdisable::%player%} to true
+            send "&cMessages disabled"

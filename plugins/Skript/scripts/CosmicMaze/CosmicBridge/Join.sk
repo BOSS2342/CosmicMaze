@@ -1,0 +1,40 @@
+command /thebridge [<text>] [<text>] [<text>]:
+    trigger:
+        if arg-1 is "join":
+            if arg-2 is "1v1":
+                set {theBridge::waiting::%player%} to true
+                selectRandomMap(1v1)
+                stop
+            else if arg-2 is "2v2":
+                set {theBridge::waiting::%player%} to true
+                selectRandomMap(2v2)
+                stop
+            else if arg-2 is "3v3":
+                set {theBridge::waiting::%player%} to true
+                selectRandomMap(3v3)
+                stop
+            else if arg-2 is "1v1v1v1":
+                set {theBridge::waiting::%player%} to true
+                selectRandomMap(1v1v1v1)
+                stop
+            else:
+                send "&cThe only gamemodes available are:"
+                send "&e1v1, 2v2, 3v3 and 1v1v1v1"
+                stop
+        else if arg-1 is "leave":
+            set {_q} to getBridgeQueueOfPlayer(player)
+            if {inGame::%player%} is true:
+                send "&cYou're in a game! You shall not leave"
+                stop
+            else:
+                remove player from {}
+        else if arg-1 is "setup":
+            if player is op:
+                if arg-2 is "setPos":
+                    #Work on functions before continuing also finish the leaving system after functions
+
+
+
+
+
+

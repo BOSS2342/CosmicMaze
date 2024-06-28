@@ -1,0 +1,14 @@
+options:
+  use-permissions: true
+
+on drop:
+  if player has permission "drop.deny":
+    if player is not op:
+      cancel event
+      send "&cYou are not allowed to drop items!"
+    else if player is op:
+      wait 1 second
+      
+
+
+

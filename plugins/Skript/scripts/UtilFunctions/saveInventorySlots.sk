@@ -1,0 +1,9 @@
+function saveInventorySlots(g: inventory, slots: number) :: objects:
+    #When returning this list, indicies are not saved, meaning that the slot numbers will be super weird
+    #But it works to save the order which is all I really cared about
+
+    set {_iterations} to 0
+    loop {_slots} times:
+        set {_gui::%{_iterations}%} to slot {_iterations} of {_g}
+        add 1 to {_iterations}
+    return {_gui::*}

@@ -1,0 +1,217 @@
+#{kits} goes {kits::%index number%} = "Name of Kit"
+#{kits::kitItem} = type of kit item
+#{kits::items::*} containing each item in form:
+#                   = {...::(slot index + 1)} = item
+
+function getKitIndexByName(kitName: text) :: object:
+    loop {kits::*}:
+        if uncolored loop-value is uncolored {_kitName}:
+            return loop-index
+
+function deleteKit(kitIndex: number):
+    delete {kits::%{_kitIndex}%::items::*}
+    delete {kits::%{_kitIndex}%::*}
+    delete {kits::%{_kitIndex}%}
+    set {kits} to true
+
+function staffKitsGUI(p: player, page: number = 0):
+    set {_gui} to chest inventory with 6 rows named "Kit Manager"
+
+    set {staffKitGUIPageNumber::%{_p}%} to {_page}
+    set {_itemsPerPage} to 5
+    set {_pages} to floor(size of {kits::*} / {_itemsPerPage})
+
+    set slot 4 of {_gui} to paper named "No kits to be seen here" with lore "run /kitnew <name> to create a new kit"
+    set {_iterations} to 0
+    loop {kits::*}:
+        set {_slotOffset} to {_iterations} * 9
+        set {_kitIndex} to {_iterations} + {_page} * 5
+        if {kits::%{_kitIndex}%} is set:
+            set slot (integers between (0 + {_slotOffset}) and (8 + {_slotOffset})) of {_gui} to light blue stained glass pane named "&9None"
+            set slot (1 + {_slotOffset}) of {_gui} to {kits::%{_kitIndex}%::kitItem} named {kits::%{_kitIndex}%}
+            set slot (4 + {_slotOffset}) of {_gui} to chest named "&2Equip Kit" 
+            set slot (5 + {_slotOffset}) of {_gui} to glass block named "&fPreviw Kit"
+            set slot (6 + {_slotOffset}) of {_gui} to yellow stained clay named "&eEdit Kit"
+            set slot (7 + {_slotOffset}) of {_gui} to red stained clay named "&4Delete Kit"
+
+        add 1 to {_iterations}
+
+    if {_page} is {_pages}:
+        set {_isNextPage} to false
+    else: 
+        set {_isNextPage} to true
+    if {_page} is 0:
+        set {_isPrevPage} to false
+    else: 
+        set {_isPrevPage} to true
+
+    set slot (integers between 45 and 53) of {_gui} to light gray stained glass pane named "&7None"
+    set slot 49 of {_gui} to name tag named "%{_page}% out of %{_pages}% pages"
+    set slot 45 of {_gui} to arrow named "&fLast Page"
+    set slot 53 of {_gui} to arrow named "&fNext Page"
+
+    open {_gui} to {_p}
+
+function previewKitGUI(p: player, kitIndex: number):
+    set {_kitName} to {kits::%{_kitIndex}%}
+
+    set {_gui} to chest inventory with 3 rows named "%{_kitName}%"
+
+    set {_iterations} to 0
+    loop {kits::%{_kitIndex}%::items::*}:
+        set slot {_iterations} of {_gui} to {kits::%{_kitIndex}%::items::%{_iterations} + 1%}
+        add 1 to {_iterations}
+
+    open {_gui} to {_p}
+    
+function editKitGUI(p: player, kitIndex: number):
+    set {_kitName} to {kits::%{_kitIndex}%}
+    set {_kitItem} to {kits::%{_kitIndex}%::kitItem}
+    set {_gui} to chest inventory with 4 rows named "&eEdit Kit: %{_kitName}%"
+
+    if {tempKitStorage::%{_p}%} is not set:
+        set slot (integers between 0 and 26) of {_gui} to air
+        set slot 27 of {_gui} to name tag named "&5%{_kitName}%"
+        set slot 28 of {_gui} to {_kitItem} named "&5Put Kit Display Item Here"
+        set slot (integers between 29 and 33) of {_gui} to light gray stained glass pane named "&7None"
+        set slot 34 of {_gui} to green stained glass pane named "&2Confirm"
+        set slot 35 of {_gui} to red stained glass pane named "&4Cancel"
+        set {_iterations} to 0
+        loop {kits::%{_kitIndex}%::items::*}:
+            set slot {_iterations} of {_gui} to loop-value
+            add 1 to {_iterations}
+    else:
+        set slot (integers between 0 and 26) of {_gui} to air
+        set slot 27 of {_gui} to name tag named "&5%{_kitName}%"
+        set slot 28 of {_gui} to {_kitItem} named "&5Put Kit Display Item Here"
+        set slot (integers between 29 and 33) of {_gui} to light gray stained glass pane named "&7None"
+        set slot 34 of {_gui} to green stained glass pane named "&2Confirm"
+        set slot 35 of {_gui} to red stained glass pane named "&4Cancel"
+        set {_iterations} to 0
+        loop {tempKitStorage::%{_p}%::*}:
+            set slot {_iterations} of {_gui} to loop-value
+            add 1 to {_iterations}
+
+    open {_gui} to {_p}
+
+function confirmKitEditGUI(p: player, kitName: text, kitItem: item):
+    set {_gui} to chest inventory with 1 row named "Confirm Kit &eEdit"
+
+    set slot 0 of {_gui} to {_kitItem} named {_kitName}
+    set slot 7 of {_gui} to green stained glass pane named "&2Confirm &l&eEdit"
+    set slot 8 of {_gui} to red stained glass pane named "&4Cancel"
+
+    open {_gui} to {_p}
+    
+
+function deleteKitGUI(p: player, kitIndex: number):
+    set {_kitName} to {kits::%{_kitIndex}%}
+    set {_kitItem} to {kits::%{_kitIndex}%::kitItem}
+    set {_gui} to chest inventory with 1 row named "&4Delete Kit: %{_kitName}%"
+
+    set slot 0 of {_gui} to {_kitItem} named {_kitName}
+    set slot 7 of {_gui} to green stained glass pane named "&2Confirm &l&4Deletion"
+    set slot 8 of {_gui} to red stained glass pane named "&4Cancel"
+    open {_gui} to {_p}
+
+on inventory click:
+    if name of event-inventory is "Kit Manager":
+        cancel event
+
+        set {_pageNumber} to {staffKitGUIPageNumber::%player%}
+        set {_maxPages} to floor(size of {kits::*} / 5)
+
+        set {_row} to floor(index of clicked slot / 9)
+
+        set {_kitIndex} to {_row} + {_pageNumber}
+
+        if clicked slot is chest:
+            loop {kits::%{_kitIndex}%::items::*}:
+                give player loop-value
+        else if clicked slot is glass block:
+            previewKitGUI(player, {_kitIndex})
+        else if clicked slot is red stained clay:
+            deleteKitGUI(player, {_kitIndex})
+        else if clicked slot is yellow stained clay:
+            editKitGUI(player, {_kitIndex})
+        else if clicked slot is arrow named "&fLast Page":
+            if {_pageNumber} is 0:
+                staffKitsGUI(player, {_maxPages})
+            else:
+                staffKitsGUI(player, {_pageNumber} - 1)
+
+        else if clicked slot is arrow named "&fNext Page":
+            if {_pageNumber} is {_maxPages}:
+                staffKitsGUI(player, 0)
+            else:
+                staffKitsGUI(player, {_pageNumber} + 1)
+
+    #Deletion GUI
+    if name of event-inventory contains "Delete Kit: ":
+        cancel event
+        set {_pageNumber} to {staffKitGUIPageNumber::%player%}
+        set {_kitName} to name of slot 0 of event-inventory
+        set {_kitIndex} to getKitIndexByName({_kitName})
+
+        if clicked slot is green stained glass pane:
+            send "&lDeleting Kit: %{_kitName}%" to player
+            deleteKit({_kitIndex})
+            staffKitsGUI(player, {_pageNumber})
+            
+        else if clicked slot is red stained glass pane:
+            send "&lCancelling Deletion" to player
+            staffKitsGUI(player, {_pageNumber})
+    
+    #Edit GUI
+    if name of event-inventory contains "Edit Kit: ":
+        set {tempKitStorage::%player%} to true
+        set {tempKitStorage::%player%::*} to saveInventorySlots(player's current inventory, 36)
+        
+        set {_row} to floor(index of clicked slot / 9)
+        set {_pageNumber} to {staffKitGUIPageNumber::%player%}
+
+        set {_kitName} to name of slot 27 of event-inventory
+        set {_kitItem} to type of slot 28 of event-inventory
+
+        if inventory action is swap cursor stack:
+            if index of clicked slot is 28:
+                if cursor slot of player is not air:
+                    wait 1 tick
+                    set cursor slot of player to air
+                    set slot 28 of event-inventory to type of slot 28 of event-inventory named "&5Put Kit Display Item Here"
+        if {_row} is 3:
+            cancel event
+            #Close Inventory, Open Kits GUI, deleteTempKitStorage
+            if clicked slot is red stained glass pane:
+                staffKitsGUI(player, {_pageNumber})
+                deleteTempKitStorage(player)
+            if clicked slot is green stained glass pane:
+                send "Confirm edit of kit: %{_kitName}%"
+                confirmKitEditGUI(player, {_kitName}, {_kitItem})
+
+    if name of event-inventory is "Confirm Kit &eEdit":
+        set {_kitName} to name of slot 0 of event-inventory
+        set {_kitIndex} to getKitIndexByName({_kitName})
+        cancel event
+        if clicked slot is green stained glass pane:
+            set {kits::%{_kitIndex}%} to {_kitName}
+            loop 27 times:
+                set {kits::%{_kitIndex}%::items::%loop-number%} to {tempKitStorage::%player%::%loop-number%}
+            set {kits::%{_kitIndex}%::kitItem} to type of slot 0 of event-inventory
+
+            deleteTempKitStorage(player)
+            staffKitsGUI(player, {staffKitGUIPageNumber::%player%})
+        if clicked slot is red stained glass pane:
+            close player's inventory
+            editKitGUI(player, {_kitName})
+
+
+
+
+        
+
+command /openKits [<number = 0>]:
+    permission: op
+    trigger:
+        set {staffKitGUIPageNumber} to true
+        staffKitsGUI(player, arg-1)

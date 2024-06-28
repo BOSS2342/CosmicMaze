@@ -1,0 +1,61 @@
+command /readyup [<text>]:
+    permission: op
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease specify: red, blue, aqua, green, purple or gold"
+        if arg-1 is "red":
+            set {redTeamReady} to true
+            loop {teams::red::*}:
+                send title "&2Your team has readied up!" to loop-value
+            loop {teams::blue::*}:
+                send title "&4Red team has readied up!" with subtitle "&7Press button to ready up" to loop-value
+        if arg-1 is "blue":
+            set {blueTeamReady} to true
+            loop {teams::blue::*}:
+                send title "&2Your team has readied up!" to loop-value
+            loop {teams::red::*}:
+                send title "&9Blue team has readied up!" with subtitle "&7Press button to ready up" to loop-value
+        if arg-1 is "gold":
+            set {goldTeamReady} to true
+            loop {teams::gold::*}:
+                send title "&2Your team has readied up!" to loop-value
+            loop {teams::cyan::*}:
+                send title "&6Gold team has readied up!" with subtitle "&7Press button to ready up" to loop-value
+            if {cyanTeamReady} is true:
+                goldCyanReady()
+                cyanGoldReady()
+        if arg-1 is "cyan":
+            set {cyanTeamReady} to true
+            loop {teams::cyan::*}:
+                send title "&2Your team has readied up!" to loop-value
+            loop {teams::gold::*}:
+                send title "&bCyan team has readied up!" with subtitle "&7Press button to ready up" to loop-value
+            if {goldTeamReady} is true:
+                goldCyanReady()
+                cyanGoldReady()
+        if arg-1 is "purple":
+            set {purpleTeamReady} to true
+            loop {teams::purple::*}:
+                send title "&2Your team has readied up!" to loop-value
+            loop {teams::green::*}:
+                send title "&5Purple team has readied up!" with subtitle "&7Press button to ready up" to loop-value
+            if {greenTeamReady} is true:
+                greenPurpleReady()
+                purpleGreenReady()
+        if arg-1 is "green":
+            set {greenTeamReady} to true
+            loop {teams::green::*}:
+                send title "&2Your team has readied up!" to loop-value
+            loop {teams::green::*}:
+                send title "&aGreen team has readied up!" with subtitle "&7Press button to ready up" to loop-value
+            if {purpleTeamReady} is true:
+                greenPurpleReady()
+                purpleGreenReady()
+
+
+
+on server load:
+    execute console command "clearteams"
+    execute console command "unready"
+
+

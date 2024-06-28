@@ -1,0 +1,221 @@
+on command "//calculate":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+
+on command "//calc":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+on command "/pl":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+on command "/plugin":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+on command "/plugins":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+on command "/skript:unspectate":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+on command "/unspectate":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+on command "/spectate":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+on command "/skript:spectate":
+    if player is not op:
+        cancel event
+        send "&cThis command is unavailable"
+
+command /thall:
+    trigger:
+        if player is in world "Lobby" or "lobby2":
+            execute console command "warp %player% thall"
+        else:
+            send "&cYou can only use this command in the Lobby."
+
+
+
+
+
+command /send [<player>]:
+    trigger:
+        if player is not op:
+            send "&cNO"
+        else:
+            if arg-1 is not set:
+                send "&cPlease set a player to send to spawn"
+            else if arg-1 is set:
+                if arg-1 is online:
+                    teleport arg-1 to the spawn point of world "Lobby"
+                    send "&aYou have sent %arg-1% to the spawn of the Lobby world."
+                    send "&aYou have been sent to the spawn of the Lobby world." to arg-1
+                else:
+                    send "&c%arg-1% is not online!"
+
+
+command /help [<text>]:
+    trigger:
+        if arg-1 is not set:
+            send "&5Cosmic Maze" to player
+            send "&7-----------" to player
+            send "&6 Help Menu " to player
+            send "&2Do /help (page)" to player
+            send "&2There is 1 page for players" to player
+            if player is op:
+                send "&2There are additional MODERATOR exclusive pages!" to player
+                send "&2Do /help mod1" to player
+        else if arg-1 is "1":
+            send "&2Page 1:" to player
+            send "&7/lobby (lobby) | Teleports player to specified lobby" to player
+            send "&7/thall | Teleports you to the Tournament Hall" to player
+            send "&7/msg (player) (message) | Send a private message to a player" to player
+            send "&7/r or /reply | Reply to the player you most recently messaged" to player
+            send "&7----------------------------------------------------" to player
+        else if arg-1 is "mod1":
+            if player is op:
+                send "&2Moderator Commands: Page 1" to player
+                send "" to player
+                send "&e/sp, /setsp, /delsp &7| &cLike warps but for moderators" to player
+                send "&e/setlobby, /dellobby &7| &cManage lobbies" to player
+                send "&e/chatcooldown [on|off] &7| &cManage chat cooldown for players" to player
+                send "&e/mutechat [on|off] &7| &cTurn on or off public chat for non-ops" to player
+                send "&e/clearchat &7| &cClear the chat" to player
+                send "&e/mm (message) &7| &cSend a message to all moderators" to player
+                send "&e/msglog (player) &7| &cCheck a player's message logs" to player
+                send "&e/clealog (player) &7| &cClear a player's message logs" to player
+                send "&e/clog (player) &7| &cView a player's command logs" to player
+                send "&e/clearclog (player) &7| &cClear a player's command logs" to player
+                send "&2Do /help mod2 for more..." to player
+            else:
+                send "&cYou do not have permission to view this page." to player
+        else if arg-1 is "mod2":
+            if player is op:
+                send "&2Moderator Commands: Page 2" to player
+                send "" to player
+                send "&e/globallog &7| &cSee global logs as if watching the conversation" to player
+                send "&e/clearglog &7| &cClear global logs" to player
+                send "&e/rbl (player) &7| &cView a player's REALLY bad language" to player
+                send "&e/rblclear (player) &7| &cClear a player's RBL" to player
+                send "&e/punishments <reset|add> (player) &7| &cManage player punishments" to player
+                send "&e/modmail <text|Checked> &7| &cSend modmail or remove it for everyone using 'Checked'" to player
+                send "&e/setjail (name) &7| &cSet a jail's location" to player
+                send "&e/deljail (name) &7| &cDelete a jail" to player
+                send "&e/jail (player) &7| &cLock them up" to player
+                send "&e/unjail (player) &7| &cUnlock them" to player
+                send "&e/lockworld (world) &7| &cPrevents players from entering world unless on the exemption list"
+                send "&e/unlockworld (world) &7| &cUnlocks the specified world"
+                send "&2For plugin commands, use /(plugin)" to player
+            else:
+                send "&cYou do not have permission to view this page." to player
+        else:
+            send "&cInvalid page. Use &e/help &cfor a list of available pages." to player
+
+
+
+command /lockworld [<text>]:
+    permission: skript.lockworld
+    description: Locks a specified world by teleporting all players to another world and setting a lock flag.
+    usage: /lockworld <world>
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease specify a world to lock." to player
+            stop
+        else:
+            set {_world} to arg-1  # Store the specified world name
+            send "&6Locking world %{_world}%..." to player
+            loop all players in world {_world}:
+                teleport loop-player to location at world "Lobby"'s spawn location  # Teleport players to world "Lobby"
+                send "&cThe world you were in has been locked by %player%! You will be unable to access it for the time being." to loop-player
+            set {worldlock::%{_world}%} to true  # Set a flag indicating the world is locked
+            send "&2Lock successful for %{_world}%!" to player
+
+command /unlockworld [<text>]:
+    permission: skript.unlockworld
+    description: Unlocks a specified world, allowing players to access it again.
+    usage: /unlockworld <world>
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease specify a world to unlock." to player
+            stop
+        else:
+            set {_world} to arg-1
+            send "&6Unlocking world %{_world}%" to player
+            set {worldlock::%{_world}%} to false  # Set the lock flag to false
+            send "&2World unlocked for %{_world}%!" to player
+
+on player world change:
+    if player's name is not "Marrp":
+        if player's name is not "clasycow":
+            if player's name is not "ohCosmos":
+                if player's name is not "iCosmiic":
+                    if player's name is not "Spots":
+                        if player's name is not "i5tar":
+                            set {_world} to player's world
+                            if {worldlock::%{_world}%} is true:
+                                teleport player to location at world "Lobby"'s spawn location
+                                send "&cThat world is currently locked! You're unable to access it." to player
+
+
+on player move:
+    if player's name is "Spots":
+        if random integer between 1 and 10000 is below or equal to 3:
+            cancel event
+
+
+
+
+
+
+
+command /clearpartyme:
+    trigger:
+        delete {party::%player%}
+        delete {party::%player%::leader}
+        delete {party::%player%::*}
+
+
+
+command /fillarea <text> <number> <number> <number> <number> <number> <number> <text>:
+    trigger:
+        set {_world} to world(arg-1)
+        if {_world} is not set:
+            send "Invalid world name!" to player
+            stop
+        set {_x1} to arg-2
+        set {_y1} to arg-3
+        set {_z1} to arg-4
+        set {_x2} to arg-5
+        set {_y2} to arg-6
+        set {_z2} to arg-7
+        set {_block} to arg-8
+        loop {_x1} to {_x2}:
+            loop {_y1} to {_y2}:
+                loop {_z1} to {_z2}:
+                    set block at loop-value-1, loop-value-2, loop-value-3 in {_world} to {_block}
+        send "Filled the area with %{_block}% in world %{arg-1}%!" to player
+
+
+
+
+
+
+
+

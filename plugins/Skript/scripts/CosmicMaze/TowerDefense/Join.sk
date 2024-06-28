@@ -1,0 +1,63 @@
+command /towerdefense:
+    trigger:
+        if {inTowerGame::%player%} is true:
+            send "&cYou're already in a game!"
+            stop
+        else if {inTowerWaiting::%player%} is true:
+            send "&cLeaving game..."
+            wait 1.2 seconds
+            teleport player to {Lobby::Main}
+            set {inTowerWaiting::%player%} to false
+            send "&eYou have left tower defense waiting."
+            set {_TOP} to getTeamOfPlayerTD(player)
+            remove player from {TD::%{_TOP}%::*}
+        else:
+            if random integer between 1 and 2 is 1:
+                teleport player to {waitingTD}
+                send "&eYou are now waiting for the game to start... &6(Gold Team)"
+                set {inTowerWaiting::%player%} to true
+                add player to {TD::gold::*}
+                checkForReady()
+            else:
+                teleport player to {waitingTD}
+                send "&eYou are now waiting for the game to start... &b(Cyan Team)"
+                set {inTowerWaiting::%player%} to true
+                add player to {TD::cyan::*}
+                checkForReady()
+                
+command /forcestopTD:
+    permission: op
+    trigger:
+        loop all players:
+            if {inTowerGame::%loop-player%} is true:
+                set {inTowerGame::%loop-player%} to false
+        clear {TD::gold::*}
+        clear {TD::cyan::*}
+        delete {TD::*}
+        delete {TD::gold::*}
+        delete {TD::cyan::*}
+
+
+
+
+command /setupTD [<text>] [<text>]:
+    permission: op
+    trigger:
+        if arg-1 is "set":
+            if arg-2 is "CyanSpawn":
+                set {cyanTowerDefense} to player's location
+            else if arg-2 is "GoldSpawn":
+                set {goldTowerDefense} to player's location
+            else if arg-2 is "Waiting":
+                set {waitingTD} to player's location
+            else:
+                send "&cYou can only set &bCyanSpawn &7or &6GoldSpawn"
+        else:
+            send "&cIncorrect usage! Try: /setupTD [set] [GoldSpawn|CyanSpawn|Waiting]"
+
+
+
+
+
+
+

@@ -1,0 +1,172 @@
+command /guild [<text>] [<text>] [<text>]:
+    aliases: /g
+    trigger:
+        if arg-1 is not set:
+            send "&e/guild create (name)"
+            send "&e/guild invite (player)"
+            send "&e/guild accept (guild)"
+            send "&e/guild demote (player)"
+            send "&e/guild promote (player)"
+            send "&e/guild disband"
+            send "&e/guild discord"
+            send "&e/guild settings color (color)"
+            send "&e/guild settings motd (message)"
+            send "&e/guild settings description (description)"
+            send "&e/guild members"
+            send "&e/guild online"
+            send "&e/guild rename (name)"
+            send "&e/guild chat"
+            send "&7---------------------"
+            send "&8Guild system - By Marrp"
+        else if arg-1 is "create":
+            if {inGuild.%player%} is set:
+                send "&cYou are already in a Guild."
+            else:
+                if arg-2 is not set:
+                    send "&ePlease specify a name to call your Guild."
+                else:
+                    set {_name} to arg-2
+                    set {_bannedWords::*} to "inappropriate", "banned", "words", "here" # Add more banned words as needed
+                    loop {_bannedWords::*}:
+                        if "%{_name}%" contains loop-value:
+                            send "&cThe guild name contains inappropriate language. Please choose another name."
+                            stop
+                    set {inGuild.%player%} to {_name}
+                    set {Guild.%{_name}%} to true
+                    set {guildLeader.%{_name}%} to player
+                    add player to {GuildMembers.%{_name}%::*}
+                    send "&e&lGuild Created Successfully!"
+                    send "&eYou are now the proud owner of the %{_name}% Guild."
+        else if arg-1 is "invite":
+            if {inGuild.%player%} is not set:
+                send "&cYou're not in a Guild."
+            else if {guildLeader.%{inGuild.%player%}%} is not player:
+                send "&cSorry, but only the leader of the guild can invite players to join."
+            else:
+                if arg-2 is not set:
+                    send "&ePlease specify a player to invite."
+                else:
+                    set {guildInvite.%arg-2%} to {inGuild.%player%}
+                    send "&eInvitation sent to %arg-2% to join your guild."
+        else if arg-1 is "accept":
+            if arg-2 is not set:
+                send "&cPlease specify a guild to accept the invite from."
+            else:
+                if {guildInvite.%player%} is not arg-2:
+                    send "&cIt appears as if you do not have an invite from %arg-2%!"
+                else:
+                    set {inGuild.%player%} to arg-2
+                    add player to {GuildMembers.%arg-2%::*}
+                    delete {guildInvite.%player%}
+                    send "&eYou have successfully joined the %arg-2% Guild."
+        else if arg-1 is "demote":
+            if {inGuild.%player%} is not set:
+                send "&cYou're not in a Guild."
+            else if {guildLeader.%{inGuild.%player%}%} is not player:
+                send "&cSorry, but only the leader of the guild can demote members."
+            else:
+                if arg-2 is not set:
+                    send "&ePlease specify a player to demote."
+                else:
+                    if {inGuild.%arg-2%} is not {inGuild.%player%}:
+                        send "&cPlayer %arg-2% is not in your guild."
+                    else:
+                        set {guildMemberRank.%arg-2%} to "member"
+                        send "&ePlayer %arg-2% has been demoted to member."
+                        send "&eYou have been demoted to member in the %{inGuild.%player%} Guild." to arg-2
+        else if arg-1 is "promote":
+            if {inGuild.%player%} is not set:
+                send "&cYou're not in a Guild."
+            else if {guildLeader.%{inGuild.%player%}%} is not player:
+                send "&cSorry, but only the leader of the guild can promote members."
+            else:
+                if arg-2 is not set:
+                    send "&ePlease specify a player to promote."
+                else:
+                    if {inGuild.%arg-2%} is not {inGuild.%player%}:
+                        send "&cPlayer %arg-2% is not in your guild."
+                    else:
+                        set {guildMemberRank.%arg-2%} to "officer"
+                        send "&ePlayer %arg-2% has been promoted to officer."
+                        send "&eYou have been promoted to officer in the %{inGuild.%player%} Guild." to arg-2
+        else if arg-1 is "disband":
+            if {inGuild.%player%} is not set:
+                send "&cYou're not in a Guild."
+            else if {guildLeader.%{inGuild.%player%}%} is not player:
+                send "&cSorry, but only the leader of the guild can disband the guild."
+            else:
+                loop {GuildMembers.%{inGuild.%player%}%::*}:
+                    delete {inGuild.%loop-value%}
+                delete {Guild.%{inGuild.%player%}%}
+                delete {guildLeader.%{inGuild.%player%}%}
+                send "&eThe guild has been disbanded."
+        else if arg-1 is "discord":
+            send "&eJoin our guild's Discord server at: <discord_link>"
+        else if arg-1 is "settings":
+            if arg-2 is not set:
+                send "&ePlease specify a setting and arguments."
+            else:
+                if arg-2 is "color":
+                    if arg-3 is not set:
+                        send "&ePlease specify a color for your guild."
+                    else:
+                        set {guildSetting.color.%{inGuild.%player%}%} to arg-3
+                        send "&eGuild color updated to %arg-3%."
+                else if arg-2 is "motd":
+                    if arg-3 is not set:
+                        send "&ePlease specify a message of the day for your guild."
+                    else:
+                        set {guildSetting.motd.%{inGuild.%player%}%} to arg-3
+                        send "&eGuild MOTD updated to %arg-3%."
+                else if arg-2 is "description":
+                    if arg-3 is not set:
+                        send "&ePlease specify a description for your guild."
+                    else:
+                        set {guildSetting.description.%{inGuild.%player%}%} to arg-3
+                        send "&eGuild description updated to %arg-3%."
+        else if arg-1 is "members":
+            if {inGuild.%player%} is not set:
+                send "&cYou're not in a Guild."
+            else:
+                send "&eMembers of your guild:"
+                loop {GuildMembers.%{inGuild.%player%}%::*}:
+                    send "&e- %loop-value%"
+        else if arg-1 is "online":
+            if {inGuild.%player%} is not set:
+                send "&cYou're not in a Guild."
+            else:
+                send "&eOnline members of your guild:"
+                loop {GuildMembers.%{inGuild.%player%}%::*}:
+                    if loop-value is online:
+                        send "&e- %loop-value%"
+        else if arg-1 is "rename":
+            if {inGuild.%player%} is not set:
+                send "&cYou're not in a Guild."
+            else if {guildLeader.%{inGuild.%player%}%} is not player:
+                send "&cSorry, but only the leader of the guild can rename the guild."
+            else:
+                if arg-2 is not set:
+                    send "&ePlease specify a new name for your Guild."
+                else:
+                    set {_newName} to arg-2
+                    set {_bannedWords::*} to "inappropriate", "banned", "words", "here" # Add more banned words as needed
+                    loop {_bannedWords::*}:
+                        if "%{_newName}%" contains loop-value:
+                            send "&cThe guild name contains inappropriate language. Please choose another name."
+                            stop
+                    set {Guild.%{_newName}%} to {Guild.%{inGuild.%player%}%}
+                    delete {Guild.%{inGuild.%player%}%}
+                    set {inGuild.%player%} to {_newName}
+                    send "&eYour guild has been renamed to %{_newName}%."
+
+command /guildchat [<text>]:
+    aliases: /gc
+    trigger:
+        if {inGuild.%player%} is not set:
+            send "&cYou are not in a guild."
+        else:
+            if arg-1 is not set:
+                send "&cPlease enter a message to send to your guild."
+            else:
+                loop {GuildMembers.%{inGuild.%player%}%::*}:
+                    send "&e[Guild] %player%: %arg-1%" to loop-value

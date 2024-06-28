@@ -1,0 +1,16 @@
+command /disablenoteblocks:
+    permission: admin.permission  # Replace with appropriate admin permission
+    trigger:
+        set {note_blocks_disabled} to true
+        send "&cNote blocks have been disabled." to the player
+
+command /enablenoteblocks:
+    permission: admin.permission  # Replace with appropriate admin permission
+    trigger:
+        set {note_blocks_disabled} to false
+        send "&aNote blocks have been re-enabled." to the player
+
+on note play:
+    if {note_blocks_disabled} is true:
+        cancel event
+        send "&cNote blocks are currently disabled." to the player

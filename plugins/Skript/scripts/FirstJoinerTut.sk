@@ -1,0 +1,72 @@
+function forcedTutorial(p: player):
+    set {SAOP} to size of all offline players
+    broadcast "&7&l[&r&d%{SAOP}%&7&l] &2Welcome to &5Cosmic Maze &b%{_p}%"
+    send "&eThis is a tutorial for you..." to {_p}
+    send "&eour new player." to {_p}
+    set {inTutorial::%{_p}%} to true
+    wait 5 seconds
+    teleport {_p} to {ofjFirstPoint}
+    send "&9This is cosmic maze. A server, an experience." to {_p}
+    wait 5 seconds
+    teleport {_p} to {ofjSecondPoint}
+    send "&9Here you can find the top 10 players on the list above!" to {_p}
+    send "&9Below is &eThe Podium &9to display the top 3 players" to {_p}
+    send "&9that have killed many to become who they are today." to {_p}
+    wait 5 seconds
+    teleport {_p} to {ofjThirdPoint}
+    send "&9Next on our tour comes the staff team. They will be here" to {_p}
+    send "&9always... Like really, always. Some of us need to touch some grass." to {_p}
+    send "&9We can always assist you if you need help. And report bugs to us" to {_p}
+    wait 5 seconds
+    set {inTutorial::%{_p}%} to false
+    make {_p} execute "/l"
+
+
+
+
+
+on first join:
+    forcedTutorial(player)
+
+
+command /setfjp <text>:
+    trigger:
+        if arg-1 is "firstp":
+            set {ofjFirstPoint} to player's location
+        else if arg-1 is "secondp":
+            set {ofjSecondPoint} to player's location
+        else if arg-1 is "thirdp":
+            set {ofjThirdPoint} to player's location
+        else:
+            send "&cbruh you aint real frfr"
+
+
+on player move:
+    if {inTutorial::%player%} is true:
+        cancel event
+
+on command:
+    if sender is "Marrp" parsed as player or "BOSS2342" parsed as player:
+        stop
+    if {inTutorial::%player%} is true:
+        cancel event
+        send "&cNuh uh"
+
+command /sendtotutorial [<player>]:
+    permission: op
+    trigger:
+        if sender is not "Marrp" parsed as player or "BOSS2342" parsed as player:
+            send "Unknown command. Type ""/help"" for help."
+        else if arg-1 is "everyone":
+            send "&cOk.. Menace"
+            loop all players:
+                forcedTutorial(loop-player)
+        else:
+            forcedTutorial(arg-1)
+
+
+
+
+
+
+

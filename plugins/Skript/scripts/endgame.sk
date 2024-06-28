@@ -1,0 +1,18 @@
+options:
+  standalone: true
+
+command /end:
+  trigger:
+    # Store the coordinates of the block you want to modify
+    set {_x} to -2285
+    set {_y} to 9
+    set {_z} to -607
+    
+    # Execute commands as the player to set the block to redstone
+    execute player command "setblock -2284.5 9 -606.5 minecraft:redstone_block"
+    
+    # Wait for 20 ticks (1 second at default tick rate) before setting the block back to air
+    wait 5 ticks
+    
+    # Execute commands as the player to set the block back to air
+    execute player command "setblock -2284.5 9 -606.5 minecraft:air"

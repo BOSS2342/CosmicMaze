@@ -1,0 +1,302 @@
+on right click:
+    if target is a player:
+        if player's tool is stick named "&bModeration &e&lWand" with the lore "&e&lClick a player to moderate":
+            if {moderating::%player%} is false:
+                set {moderating::%player%} to true
+                add target to {moderating::%player%::*}
+                send "&bYou're now moderating &l%target%" to player
+                send "&bYou can say ""Ban"" to ban the user" to player
+                send "&bYou can say ""Kick"" to kick them" to player
+                send "&bYou can say ""freeze"" to freeze them" to player
+                send "&bYou can say ""kill"" to kill them" to player
+                send "&bYou can say ""smite"" to smite them" to player
+                send "&bYou can say ""unfreeze"" to unfreeze them" to player
+                send "&bYou can say ""quickselect"" to make you quickselect" to player
+                send "&bYou can say ""give player item"" to give them an item" to player
+                send "&bYou can say ""Teleport here"" to teleport them to you" to player
+                send "&bYou can say ""teleport"" to teleport to them" to player
+                send "&bIf you're a dev you can say ""invite"" to invite them to the island" to player
+            else:
+                send "&cYou're already moderating a player!" to player
+                stop
+        else:
+            stop
+
+
+
+
+
+
+on left click:
+    if target is a player:
+        if player's tool is grass block named "&e&lVisit Island" with lore "&7Click to visit developer island ":
+            if {Developer::*} contains player:
+                send "&aYou have invited &9%target% &ato the developer island"
+                add target to {playerInvited::*}
+                send "&7---------------------------" to target
+                send "&e&l%player%&r&e has invited you to the developer islands!" to target
+                send "&7Do /iaccept to accept" to target
+                send "&7---------------------------" to target
+                set {_slot} to 9
+                if slot {_slot} of player's inventory is air:
+                    set slot {_slot} of player to barrier named "&eRemove invite of %target%" with lore "&7Removes %target%'s invite"
+
+                else if {_slot} is not air:
+                    add 1 to {_slot}
+                    if slot {_slot} of player's inventory is air:
+                        set slot {_slot} of player to barrier named "&eRemove invite of %target%" with lore "&7Removes %target%'s invite"
+
+
+
+on inventory click:
+    loop {playerInvited::*}:
+        if event-item is a barrier named "&eRemove invite of %loop-value%" with lore "&7Removes %loop-value%'s invite":
+            cancel event
+            remove loop-value from {playerInvited::*}
+            send "&c%loop-value%'s invite has been revoked." to player
+            teleport loop-value to {Lobby::Main}
+            remove event-item from player's inventory
+
+on inventory click:
+    if event-item is a bedrock named "&rOp Me":
+        cancel event
+        op event-player
+
+
+
+on chat:
+    if {moderating::%player%::*} is set:
+        if {moderating::%player%} is true:
+            cancel event
+            set {_m} to message
+            loop {moderating::%player%::*}:
+                if loop-value is "Marrp" or "BOSS2342" or "clasycow":
+                    stop
+                else:
+                    set {_mp} to loop-value
+
+            if {_m} is "cancel":
+                set {moderating::%player%} to false
+                clear {moderating::%player%::*}
+                send "&c&lYou're no longer managing %{_mp}%"
+
+            else if {_m} is "smite":
+                execute console command "smite %{_mp}%"
+                send "&cPlayer smitten"
+
+            else if {_m} is "ban":
+                set {bannedL::%{_mp}%} to true
+                kick {_mp} due to "&cBanned"
+                send "&cPlayer banned"
+
+            else if {_m} is "kick":
+                kick {_mp} due to "&cKicked by an administrator"
+                send "&cPlayer kicked"
+
+            else if {_m} is "freeze":
+                set {devFrozen::%{_mp}%} to true
+                send "&e%{_mp}% &bfrozen"
+
+            else if {_m} is "unfreeze":
+                set {devFrozen::%{_mp}%} to false
+                send "&e%{_mp}% &bunfrozen"
+
+            else if {_m} is "kill":
+                kill {_mp}
+                send "&c%{_mp}% killed"
+
+            else if {_m} is "op":
+                op {_mp}
+                send "&cYou have granted %{_mp}% operator"
+
+            else if {_m} is "deop":
+                deop {_mp}
+                send "&cYou have revoked %{_mp}%'s operator"
+
+            else if {_m} is "give player item":
+                wait 1 second
+                set {makingItemSelect::%player%} to true
+                set {moderating::%player%} to false
+                send "&cPlease format it like: 1 (item you want to give) ""of"" (enchantment) (level)"
+
+            else if {_m} is "invite":
+                if {Developer::*} contains sender:
+                    wait 1 second
+                    set {selectingInvite::%player%} to true
+                    set {moderating::%player%} to false
+                    send "&cYou may now select the player to invite via chat."
+
+            else if {_m} is "teleport":
+                loop {moderating::%player%::*}:
+                    teleport player to loop-value
+
+            else if {_m} is "teleport here":
+                loop {moderating::%player%::*}:
+                    teleport loop-value to player
+
+            else if {_m} is "damage":
+                loop {moderating::%player%::*}:
+                    set {_p} to loop-value
+                    damage {_p} by 1 heart
+
+            else if {_m} is "help":
+                send "&bYou can say ""Ban"" to ban the user" to player
+                send "&bYou can say ""Kick"" to kick them" to player
+                send "&bYou can say ""freeze"" to freeze them" to player
+                send "&bYou can say ""kill"" to kill them" to player
+                send "&bYou can say ""deop"" to deop them" to player
+                send "&bYou can say ""op"" to op them &cCAREFUL USING THIS" to player
+                send "&bYou can say ""smite"" to smite them" to player
+                send "&bYou can say ""unfreeze"" to unfreeze them" to player
+                send "&bYou can say ""give player item"" to give them an item" to player
+                send "&bYou can say ""Teleport here"" to teleport them to you"
+                send "&bYou can say ""teleport"" to teleport to them"
+                send "&bIf you're a dev you can say ""invite"" to invite them to the island" to player
+
+            else if {_m} is "quickselect":
+                set {makingQuickSelect::%player%} to true
+                set {moderating::%player%} to false
+                send "&7Make your quick selection now"
+
+
+on chat:
+    if {selectingInvite::%player%} is true:
+        cancel event
+        set {_m} to message
+        if {_m} is "cancel":
+            set {selectingInvite::%player%} to false
+            set {moderating::%player%} to true
+            send "&cYou cancelled, you're now back to moderating"
+
+        else:
+            add {_m} to {playerInvited::*}
+            set {moderating::%player%} to true
+            set {selectingInvite::%player%} to false
+            wait 1 second
+            send "&cYou are now back to moderating and the player has been &asuccessfully &e&linvited!"
+
+
+on chat:
+    if {makingItemSelect::%player%} is true:
+        cancel event
+        set {_m} to message
+        if {_m} is "cancel":
+            set {makingItemSelect::%player%} to false
+            set {moderating::%player%} to true
+            send "&cYou cancelled, you're now back to moderating"
+
+        else:
+            send "&cThank you"
+            set {makingItemSelect::%player%} to false
+            wait 0.5 seconds
+            set {moderating::%player%} to true
+            loop {moderating::%player%::*}:
+                set {_l} to loop-value
+                Give {_l} {_m}
+
+
+
+on chat:
+    if {makingQuickSelect::%player%} is true:
+        if {moderating::%player%} is true:
+            cancel event
+            set {moderating::%player%} to false
+
+        set {_m} to message
+        if {_m} is "cancel":
+            set {makingQuickSelect::%player%} to false
+            send "&c&lYou're no longer making a quick select"
+            wait 1 second
+            set {moderating::%player%} to true
+
+        else if {_m} is "smite":
+            set {quickSelect::%player%} to "smite"
+            send "&bYour quick select is now Smite"
+            wait 1 second
+            set {moderating::%player%} to true
+
+        else if {_m} is "ban":
+            set {quickSelect::%player%} to "ban"
+            send "&bYour quick select is now Ban"
+            wait 1 second
+            set {moderating::%player%} to true
+
+        else if {_m} is "kick":
+            set {quickSelect::%player%} to "kick"
+            send "&bYour quick select is now Kick"
+            wait 1 second
+            set {moderating::%player%} to true
+
+        else if {_m} is "freeze":
+            set {quickSelect::%player%} to "freeze"
+            send "&bYour quick select is now Freeze"
+            wait 1 second
+            set {moderating::%player%} to true
+
+        else if {_m} is "kill":
+            set {quickSelect::%player%} to "kill"
+            send "&bYour quick select is now kill"
+            wait 1 second
+            set {moderating::%player%} to true
+
+        else if {_m} is "fireball":
+            set {quickSelect::%player%} to "fireball"
+            send "&aYou can now spit out fireballs"
+            wait 1 second
+            set {moderating::%player%} to true
+
+
+
+
+
+on command:
+    if {devFrozen::%player%} is true:
+        cancel event
+on chat:
+    if {devFrozen::%player%} is true:
+        cancel event
+        send "&7&l[&r&bFrozen&7&l]&r&e %player%&r: %message%" to all players
+on player move:
+    if {devFrozen::%player%} is true:
+        cancel event
+on quit:
+    if {devFrozen::%player%} is true:
+        set {bannedL::%player%} to true
+
+on quit:
+    set {moderating::%player%} to false
+    clear {moderating::%player%::*}
+
+
+
+on player world change:
+    set {_w} to event-world
+    if {Developer::*} doesn't contain player:
+        if {playerInvited::*} doesn't contain player:
+            if {_w} contains "Developers":
+                wait 1 second
+                teleport player to {lobby::Main}
+        else:
+            stop
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

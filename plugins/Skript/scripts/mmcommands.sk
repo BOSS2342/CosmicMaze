@@ -1,0 +1,504 @@
+variables:
+  chatcooldown.enabled = false
+  chatmute.enabled = false
+  chatcooldown.duration = 3
+
+#does not affect /msg
+command /chatcooldown [<text>]:
+  permission: op
+  trigger:
+    if arg-1 is "on":
+      if {chatcooldown.enabled} is true:
+        send "&3Chat cooldown was &nalready &a&lenabled."  
+      else:
+        set {chatcooldown.enabled} to true
+        send "&3Chat cooldown has been &a&lenabled."
+    else if arg-1 is "off":
+      if {chatcooldown.enabled} is false:
+        send "&3Chat cooldown was &nalready &c&ldisabled."  
+      else:
+        set {chatcooldown.enabled} to false
+        send "&3Chat cooldown has been &c&ldisabled."
+    else:
+      send "&cUsage: /chatcooldown <on|off>"
+
+#does not affect /msg
+command /mutechat [<text>]:
+  permission: op
+  trigger:
+    if arg-1 is "off":
+      if {chatmute.enabled} is true:
+        send "&6Chat was &nalready &a&ldisabled"  
+      else:
+        set {chatmute.enabled} to true
+        send "&6Chat has been &a&ldisabled."
+        broadcast "&c!! Alert !! An Administrator has restricted the usage of chat to people with these rankings: Trial-Mod, Moderator, Admin, Owner and Devloper"
+    else if arg-1 is "on":
+      if {chatmute.enabled} is false:
+        send "&6Chat was &nalready &c&ldisabled."  
+      else:
+        set {chatmute.enabled} to false
+        send "&6Chat has been &c&ldisabled."
+        broadcast "&aPublic Chat has been re-enabled! Enjoy your time on &5Cosmic Maze"
+    else:
+      send "&cUsage: /mutechat <on|off>"
+
+on chat:
+  if {chatmute.enabled} is true:
+    if player is not op:
+      message "&cPublic chat has been disabled for players below the Trial-Mod Ranking"
+      cancel event
+  else if {chatcooldown.enabled} is true:
+    if player is not op:
+      set {_chat} to difference between {chat.%player%.cooldown} and now
+      if {_chat} is less than 3 seconds:
+        message "&cYou must wait &e%difference between 3 seconds and {_chat}% &cto chat again!"
+        cancel event
+      else:
+        set {chat.%player%.cooldown} to now
+      #end
+
+
+
+command /clearchat:
+    description: Clears the chat for all players
+    permission: skript.clearchat
+    trigger:
+        loop 1000 times:
+            broadcast " "
+        broadcast "&aChat has been cleared by &6%player%&a."
+
+      
+# Send a private message to all online moderators
+command /mm <text>:
+    description: Sends a private message to all online moderators
+    permission: skript.modmessage
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /mm <message>" to player
+            stop
+        set {_message} to arg-1
+        loop all players:
+            if loop-player has permission "skript.mod":
+                send "&b[ModMessage] &c%player%&r: %arg-1%" to loop-player
+
+
+
+
+# Show recent private message history of a specified player
+command /msglog <text>:
+    permission: skript.msglog
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /msglog <player>" to player
+            stop
+        set {_target} to arg-1
+        if player is not online:
+            send "&cPlayer %arg-1% is not online." to player
+            stop
+        if size of {msglog::%{_target}%::*} is 0:
+            send "&cNo message logs available for %arg-1%." to player
+            stop
+        send "&aRecent message history for %arg-1%:" to player
+        loop {msglog::%{_target}%::*}:
+            send "%loop-value%" to player
+
+on chat:
+    if message contains "":
+        add "&7%now%&r: &b%player% &7->&8  %message%" to {msglog::%player%::*}
+
+
+command /clearclog <player>:
+    description: Clears the command logs of a specified player
+    permission: skript.clearlog
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /clearclog <player>" to player
+            stop
+        set {_target} to arg-1
+        if {_target} is not set:
+            send "&cPlayer %arg-1% does not exist or has never logged in." to player
+            stop
+        delete {commandlogger::%{_target}%::*}
+        send "&aCommand logs cleared for %arg-1%." to player
+
+command /clog <text>:
+    permission: skript.msglog
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /clog <text>" to player
+            stop
+        set {_target} to arg-1
+        if {_target} is not set:
+            send "&cPlayer %arg-1% does not exist or has never logged in." to player
+            stop
+        if size of {commandlogger::%{_target}%::*} is 0:
+            send "&cNo command logs available for %arg-1%." to player
+            stop
+        send "&aRecent command history for %arg-1%:" to player
+        loop {commandlogger::%{_target}%::*}:
+            send "%loop-value%" to player
+
+
+# Show recent public chat message history of a specified player
+command /clearlog <player>:
+    description: Clears the chat logs of a specified player
+    permission: skript.clearlog
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /clearlog <player>" to player
+            stop
+        set {_target} to arg-1
+        if {_target} is not set:
+            send "&cPlayer %arg-1% does not exist or has never logged in." to player
+            stop
+        delete {msglog::%{_target}%::*}
+        send "&aChat logs cleared for %arg-1%." to player
+
+
+# Show recent private message history of a specified player
+command /globallog:
+    permission: skript.msglog
+    trigger:
+        send "&aRecent global chat history:" to player
+        loop {globallog::*}:
+            send "%loop-value%" to player
+
+
+on chat:
+    if message contains "":
+        add "&7%now%&r: &b%player% &7->&8 %message%" to {globallog::*}
+
+
+# Show recent public chat message history of a specified player
+command /clearglog:
+    description: Clears the chat logs of a specified player
+    permission: skript.clearlog
+    trigger:
+        delete {globallog::*}
+        send "&4Global Logs Have been removed!" to player
+
+
+
+command /rbl <offline player>:
+    permission: skript.rbl
+    trigger:
+        set {_target} to arg-1  # Store the specified player
+        send "&aBad language instances for %{_target}%:" to player
+        loop {badlanguage::%{_target}%::*}:
+            send "&7%loop-value%" to player
+
+
+
+# Show recent public chat message history of a specified player
+command /rblclear <text>:
+    description: Clears the chat logs of a specified player
+    permission: skript.clearlog
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /rblclear <player>" to player
+            stop
+        set {_target} to arg-1
+        if {_target} is not set:
+            send "&cPlayer %arg-1% does not exist or has never logged in." to player
+            stop
+        delete {badlanguage::%{_target}%::*}
+        send "&aRBL logs cleared for %arg-1%." to player
+        execute console command "modmail Checked"
+
+command /modmail <text>:
+    description: Sends a message to all mods when they log on until /modmail checked is sent
+    permission: skript.modmail
+    trigger:
+        if arg-1 is "checked":
+            if {modmail::*} is set:
+                delete {modmail::*}
+                send "&bAll modmail messages have been marked as checked and cleared." to player
+            else:
+                send "&cThere are no modmail messages to check." to player
+        else:
+            add "&c[Modmail] &7&b: %arg-1%" to {modmail::*}
+            send "&bYour message has been sent to all moderators." to player
+
+command /powermodmail <text>:
+    description: Sends a message to all mods when they log on until /powermodmail checked is sent
+    permission: skript.modmail
+    trigger:
+        if arg-1 is "checked":
+            if sender's name is "Marrp":
+                if {powermodmail::*} is set:
+                    delete {powermodmail::*}
+                    send "&bAll powermodmail messages have been marked as checked and cleared." to player
+                else:
+                    send "&cThere are no powermodmail messages to check." to player
+            else:
+                send "&cYou do not have permission to clear powermodmail messages." to player
+        else:
+            add "&c[Modmail] &7&b: %arg-1%" to {powermodmail::*}
+            send "&bYour message has been sent to all moderators." to player
+
+on join:
+    wait 1.5 seconds  # Wait for 1.5 seconds after the player joins
+    if player is op:
+        send "&bChecking for modmail messages..." to player
+        wait 2.3 seconds
+        if {modmail::*} is set:
+            send "&cYou have modmail messages:" to player
+            loop {modmail::*}:
+                send "&7%loop-value%" to player
+        else if {powermodmail::*} is set:
+            send "&cYou have modmail messages:" to player
+            loop {powermodmail::*}:
+                send "&7%loop-value%" to player
+        else:
+            send "&cNo modmail messages found." to player
+
+command /playernews <text>:
+    description: Sends a message to all mods when they log on until /modmail checked is sent
+    permission: skript.modmail
+    trigger:
+        if player is op:
+            if arg-1 is "clear":
+                delete {playernews::*}
+                send "&4Player news has been cleared!" to player
+            else:
+                add "&5Cosmic News | &r%arg-1%" to {playernews::*}
+                send "&bYour message has been sent to all players as news." to player
+
+on join:
+    if player is op:
+        wait 10 seconds
+        send "&bChecking the news..." to player
+        wait 2.3 seconds  # Adjust the wait time based on server performance
+        if {playernews::*} is set:
+            send "&eHere's the news:" to player
+            loop {playernews::*}:
+                send "&7%loop-value%" to player
+    else if player is not op:
+        wait 1.5 seconds
+        send "&bChecking the news..." to player
+        wait 2.3 seconds  # Adjust the wait time based on server performance
+        if {playernews::*} is set:
+            send "&eHere's the news:" to player
+            loop {playernews::*}:
+                send "&7%loop-value%" to player
+        else:
+            send "&cNo news today." to player
+
+
+
+
+
+
+
+command /messagefromconsole <text>:
+    description: Sends a private message to all online moderators
+    permission: skript.modmessage
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /mm <message>" to player
+            stop
+        set {_message} to arg-1
+        loop all players:
+            if loop-player has permission "skript.mod":
+                send "&cConsole Message&r: %arg-1%" to loop-player
+
+command /modhelp:
+    permission: skript.mod
+    trigger:
+        send "&7/rbl (player)&r:&c Check Player real bad words &7/rblclear (player)&r:&c Clears players real bad words&7 /clearglog&r: &cClears global Logs&7 /globallog&r: &cShows global logs&7/msglog and /clearlog&r: &cThe same as global just player specific&7 /mm&r:&c Sends message to all moderators&7 /clearchat&r: &cYou're stupid if you dont know what that is&7 /mutechat&r:&c Mutes chat for all non-operators&7 /chatcooldown&r:&c Enables 3 second chat cooldown for all non-operators"
+
+
+
+command /breakrandom <player>:
+  permission: admin.permission
+  trigger:
+    if arg-1 is online:
+      set {_items::*} to all items in the player's inventory
+      add player's helmet to {_items::*}
+      add player's chestplate to {_items::*}
+      add player's leggings to {_items::*}
+      add player's boots to {_items::*}
+      if size of {_items::*} is greater than 0:
+        set {_randomItem} to a random element out of {_items::*}
+        if {_randomItem} is not air:
+          if {_randomItem} is player's helmet:
+            set player's helmet to air
+          else if {_randomItem} is player's chestplate:
+            set player's chestplate to air
+          else if {_randomItem} is player's leggings:
+            set player's leggings to air
+          else if {_randomItem} is player's boots:
+            set player's boots to air
+          else:
+            remove {_randomItem} from player's inventory
+          send "&6[RB] &cA random item from %arg-1%'s inventory has been broken."
+        else:
+          send "&6[RB] &c%arg-1% has no items in their inventory."
+      else:
+        send "&6[RB] &c%arg-1% has no items in their inventory."
+    else:
+      send "&6[RB] &cPlayer %arg-1% is not online."
+
+command /glitchfly <player>:
+    permission: admin.permission
+    trigger:
+        if arg-1 is online:
+            set {_player} to arg-1
+            send "&6[Server] &a%{_player}% will glitch fly."
+            set {glitchfly::%{_player}%} to true
+        else:
+            send "&6[Server] &cPlayer %arg-1% is not online."
+
+on player move:
+    if {glitchfly::%player%} is true:
+        wait 6 seconds
+        if player is online:
+            if player is flying:
+                disable fly for player
+
+command /ugf <player>:
+    trigger:
+        if arg-1 is set:
+            set {_player} to arg-1
+            send "&c%{_player}% has been ugf'd"
+            set {glitchfly::%{_player}%} to false
+        else:
+            send "&cPlease specify a player's name."
+
+
+on arm swing:
+    if player's name is "Jack_O_Lantern":
+        if random integer between 1 and 100000 is less than or equal to 500:
+            damage player by 0.5
+
+
+
+
+
+
+
+on right click:
+    if player's name is "Jack_O_Lantern":
+        if random integer between 1 and 1000 is less than or equal to 3:
+            cancel event
+
+
+
+
+
+
+
+
+
+
+
+# The following parts are more experemental
+
+
+
+
+
+
+command /setjail <text>:
+    permission: skript.setjail
+    trigger:
+        set {jail::%arg-1%} to player's location
+        send "&aJail location '%arg-1%' set." to player
+
+command /jail <player> <text>:
+    permission: skript.jail
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease specify a player!" to player
+        else if {jail::%arg-2%} is not set:
+            send "&cJail location '%arg-2%' is not set." to player
+        else:
+            set {_player} to arg-1
+            teleport {_player} to {jail::%arg-2%}
+            send "&aTeleported %{_player}% to jail location '%arg-2%'" to player
+            set {jail::%{_player}%} to true
+
+
+command /unjail <player>:
+    trigger:
+        if arg-1 is not set:
+            send "&cPlease specify a player!"
+        else if {jail::%arg-1%} is false:
+            send "&c%arg-1% is not currently jailed."
+        else:
+            set {jail::%arg-1%} to false
+            send "&a%arg-1%'s jail status has been removed."
+
+
+command /jails:
+    permission: skript.jails
+    trigger:
+        send "&6List of Jail Locations:" to player
+        loop {jail::*}:
+            send "&a- %loop-value%: &c%location of {jail::%loop-value%}%" to player
+
+
+
+
+on player move:
+    if {jail::%player%} is true:
+        cancel event
+        if random integer between 1 and 1000 is 1:
+            send "&cYou cannot move while jailed!" to player
+on arm swing:
+    if {jail::%player%} is true:
+        cancel event
+on chat:
+    if {jail::%player%} is true:
+        wait 1 second
+        send "&cYou're jailed but can still send messages"
+on command:
+    if {jail::%player%} is true:
+        if player's name is "Marrp":
+            wait 1 second
+            send "you're immune LOLLLERS"
+            stop
+    else if {jail::%player%} is true:
+        cancel event
+
+            
+
+on rightclick:
+    if {jail::%player%} is true:
+        cancel event
+
+on arm swing:
+    if {jail::%player%} is true:
+        cancel event
+
+on block break:
+    if {jail::%player%} is true:
+        cancel event
+on pickup:
+    if {jail::%player%} is true:
+        cancel event
+on drop:
+    if {jail::%player%} is true:
+        cancel event
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+on load:
+  set {_chatcooldown.enabled} to false
+  set {_chatmute.enabled} to false
+  set {_chatcooldown.duration} to 5

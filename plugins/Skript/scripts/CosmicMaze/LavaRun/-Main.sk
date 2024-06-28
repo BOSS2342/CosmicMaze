@@ -1,0 +1,49 @@
+command /iWon <player>:
+    permission: op
+    trigger:
+        set {wonLavaRun::%arg-1%} to true
+        teleport arg-1 to {spectatingLavaRun}
+        send title "&aYou won!" to arg-1
+        set arg-1's gamemode to spectator
+        set {_t} to getDifficultyOfPlayer(arg-1)
+        if size of {lavaRun::%{_t}%::*} is 1:
+            endLavaRunGame(easy)
+
+        
+command /nextStage <player>:
+    trigger:    
+        set {_x} to x-coordinate of arg-1
+        set {_y} to y-coordinate of arg-1
+        set {_z} to z-coordinate of arg-1
+        remove 8 from {_x}
+        add 1 to {_y}
+        remove 109 from {_z}
+        execute console command "/teleport %arg-1% %{_x}% %{_y}% %{_z}%"
+        send "&cCongrats! You staged up"
+        add 1 to {LavaRun::stage::%arg-1%}
+        if {LavaRun::stage::%arg-1%} is 4:
+            set {_t} to getDifficultyOfPlayer(arg-1)
+            endLavaRunGame({_t})
+            loop {lavaRun::%{_t}%::*}:
+                set {LavaRun::stage::%loop-value%} to 0
+                if loop-value is not arg-1:
+                    send title "&cLoss"
+                else:
+                    send "&aYou won!"
+                    add 1 to {LavaRun::wins::%loop-value%}
+
+
+command /stoplr [<text>]:
+    permission: op
+    trigger:
+        set {stop%arg-1%} to true
+        wait 20 seconds
+        set {stop%arg-1%} to false
+        send "&cProcess complete"
+
+    
+
+
+
+
+

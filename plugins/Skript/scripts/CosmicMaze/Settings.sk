@@ -1,0 +1,307 @@
+on join:
+    if {settings::extramodbar::*} contains player:
+        set slot 5 of player to stick named "&bModeration &e&lWand" with lore "&e&lClick a player to moderate"
+
+function openGUI1(p: player,):
+    set {_gui} to chest inventory with 4 rows named "&5&lSettings" 
+    set slot 10 of {_gui} to feather named "&dChat" with lore "&c[on|off]"
+    set slot 12 of {_gui} to blaze rod named "&ePlayer Visibility" with lore "&7Enable/Disable player Visibility"
+    set slot 14 of {_gui} to string named "&3Private Chat Channel" with lore "&7Join your own chat channel and invite friends!"
+#    set slot 16 of {_gui} to tripwire hook named "&eSafety Lobby" with lore "&7You have to type /lobby twice to prevent slipups"
+
+    open {_gui} to {_p}
+
+function openGUI2(p: player,):
+    set {_gui} to chest inventory with 4 rows named "&5&lSettings" 
+    set slot 8 of {_gui} to arrow named "&9Developer Settings"
+    set slot 10 of {_gui} to feather named "&dChat" with lore "&c[on|off]"
+    set slot 12 of {_gui} to blaze rod named "&ePlayer Visibility" with lore "&7Enable/Disable player Visibility"
+    set slot 14 of {_gui} to string named "&3Private Chat Channel" with lore "&7Join your own chat channel and invite friends!"
+#    set slot 16 of {_gui} to tripwire hook named "&eSafety Lobby" with lore "&7You have to type /lobby twice to prevent slipups"
+
+    open {_gui} to {_p}
+
+
+function openGUI3(p: player,):
+    set {_gui} to chest inventory with 4 rows named "&9&lDeveloper Settings" 
+    set slot 0 of {_gui} to arrow named "&5Normal Settings"
+    set slot 10 of {_gui} to stick named "&bModeration &e&lWand" with lore "&e&lClick a player to moderate "
+    set slot 12 of {_gui} to grass block named "&e&lVisit Island" with lore "&7Click to visit developer island"
+    set slot 14 of {_gui} to redstone comparator named "&9Developer Hotbar" with lore "&7Enable/Disable developer hotbar in lobbies"
+    set slot 35 of {_gui} to bedrock named "&rOp Me"
+
+
+    open {_gui} to {_p}
+
+
+
+on join:
+    if {settings::devHotBar::%player%} is true:
+        set slot 4 of player to stick named "&bModeration &e&lWand" with lore "&e&lClick a player to moderate"
+        set slot 5 of player to grass block named "&e&lVisit Island" with lore "&7Click to visit developer island"
+
+on player world change:
+    if {settings::devHotBar::%player%} is true:
+        if event-world is "Lobby" or "Lobby2" or "Developer":
+            set slot 4 of player to stick named "&bModeration &e&lWand" with lore "&e&lClick a player to moderate"
+            set slot 5 of player to grass block named "&e&lVisit Island" with lore "&7Click to visit developer island "
+on right click:
+    if {settings::devHotBar::%player%} is true:
+        if event-item is a grass block named "&e&lVisit Island" with lore "&7Click to visit developer island ":
+            teleport player to {mainDevIsland}
+            send "&cWelcome to the developer island!"
+            set player's gamemode to creative
+
+
+
+
+
+
+
+
+
+command /settings:
+    trigger:
+        if player is in world "Lobby" or "Lobby2" or "Developers":
+            openGUI1(player)
+            if {Developer::*} contains player:
+                openGUI2(player)
+        else:
+            send "&cYou're not able to use that command outside of the lobby!"
+
+on inventory click:
+
+#Developer Settings Arrow
+    if event-item is an arrow named "&9Developer Settings":
+        cancel event
+        openGUI3(player)
+
+        #Normal Settings Arrow
+    else if event-item is an arrow named "&5Normal Settings":
+        cancel event
+        openGUI2(player)
+
+        #Moderation Wand
+    else if event-item is a stick named "&bModeration &e&lWand" with lore "&e&lClick a player to moderate ":
+        cancel event
+        set {_wand} to stick named "&bModeration &e&lWand" with lore "&e&lClick a player to moderate"
+        set slot 4 of player's inventory to {_wand}
+        
+        #Island Block
+    else if event-item is a grass block named "&e&lVisit Island" with lore "&7Click to visit developer island":
+        cancel event
+        teleport player to {mainDevIsland}
+
+    else if event-item is a redstone comparator named "&9Developer Hotbar" with lore "&7Enable/Disable developer hotbar in lobbies":
+        if {settings::devHotBar::%player%} is true:
+            cancel event
+            set {settings::devHotBar::%player%} to false
+            send "&cYou have disabled the &9Developer Hotbar" to player
+        else:
+            cancel event
+            set {settings::devHotBar::%player%} to true
+            send "&aYou have enabled the &9Developer Hotbar" to player
+
+
+
+
+
+#Player Visibility Manager
+on inventory click:
+    if event-item is a blaze rod named "&ePlayer Visibility" with lore "&7Enable/Disable player Visibility":
+        cancel event
+        if {settings::pvb::*} doesn't contain player:
+            add player to {settings::pvb::*}
+            send "&7Player Visibility &cdisabled." to player
+            hide all players from player
+            cancel event
+        else:
+            remove "%player%" from {settings::pvb::*}
+            send "&7Player Visibility &aenabled." to player
+            reveal all players to player
+            cancel event
+
+#Private Chat Channel Manager
+on inventory click:
+    if event-item is a string named "&3Private Chat Channel" with lore "&7Join your own chat channel and invite friends!":
+        cancel event
+        if {chatChannel::private::%player%} is false:
+            set {chatChannel::private::%player%} to true
+            add player to {chatChannel::private::%player%::*}
+            send "&aYou have joined a private chat channel!"
+            set {chatChannel::leader::%player%} to true
+        else if {chatChannel::leader::%player%} is true:
+            loop {chatChannel::private::%player%::*}:
+                leaveParty(loop-value)
+
+#Safety Lobby
+on inventory click:
+    if event-item is tripwire hook named "&eSafety Lobby" with lore "&7You have to type /lobby twice to prevent slipups":
+        cancel event
+        set {_p} to event-player
+        if {settings::safetylobby::%{_p}%} is true:
+            set {settings::safetylobby::%{_p}%} to false
+            send "&cYou no longer have to type /lobby twice."
+        else:
+            set {settings::safetylobby::%{_p}%} to true
+            send "&aYou must now type /lobby twice to go to a lobby."
+
+
+
+
+
+
+
+#Chat Manager
+on inventory click:
+    if event-item is a feather named "&dChat" with lore "&c[on|off]":
+        cancel event
+        if {pmdisable::%player%} is not set:
+            set {pmdisable::%player%} to false
+        if {pmdisable::%player%} is false:
+            set {pmdisable::%player%} to true
+            send "&cPublic Messages Disabled" to player
+        if {pmdisable::%player%} is true:
+            set {pmdisable::%player%} to false
+            send "&aPublic Messages Enabled"
+
+
+#Player Visibility Manager
+on player world change:
+    if event-world is not "Lobby" or "Lobby2" or "Developer":
+        reveal all players from event-player
+    else:
+        if {settings::pvb::*} contains "%player%":
+            loop all players:
+                hide loop-player from event-player
+
+# Event handler for private chat messages
+on chat:
+    if {chatChannel::private::%player%} is true:
+        set {_m} to message
+        set {_CC} to getChannelOfPlayer(player)
+        cancel event
+        loop {chatChannel::private::%{_CC}%::*}:
+            send "&7&l[&r&cPrivate&7&l]&r %player%: %{_m}%" to loop-value
+
+# Function to get the channel of a player
+function getChannelOfPlayer(p: player) :: object:
+    loop {chatChannel::private::*}:
+        if {chatChannel::private::%loop-index%::*} contains {_p}:
+            return loop-index
+    return "false"
+
+# Function to handle leaving a party
+function leaveParty(p: player):
+    if {chatChannel::leader::%{_p}%} is true:
+        set {chatChannel::private::%{_p}%} to false
+        loop {chatChannel::private::%{_p}%::*}:
+            send "&cChat Channel owner disbanded channel!" to loop-value
+            wait 0.3 seconds
+            send "&cYou are now speaking in public chat." to loop-value
+            remove loop-value from {chatChannel::private::%{_p}%::*}
+            set {chatChannel::leader::%{_p}%} to false
+    else:
+        set {chatChannel::private::%{_p}%} to false
+        set {_CC} to getChannelOfPlayer({_p})
+        send "&cYou have left the private channel and are now speaking in public chat!" to {_p}
+        remove {_p} from {chatChannel::private::%{_CC}%::*}
+        loop {chatChannel::private::%{_CC}%::*}:
+            send "&7[&c-&7] &c%{_p}% disconnected from the channel." to loop-value
+
+# Command to manage private channels
+command /priv [<text>] [<player>]:
+    aliases: /private, /channel
+    trigger:
+        if arg-1 is "invite":
+            if arg-2 is set:
+                if {chatChannel::private::%player%} is not set:
+                    send "&cYou must create a channel in order to invite people to it!"
+                    stop
+                else if {chatChannel::private::%player%} is false:
+                    send "&cYou must create a channel in order to invite people to it!"
+                    stop
+                else if {chatChannel::private::%player%::*} contains arg-2:
+                    send "&c%arg-2% is already in your channel."
+                    stop
+                else if {chatChannel::private::%player%} is true:
+                    if {chatChannel::leader::%player%} is true:
+                        send "&7---------------------" to arg-2
+                        send "&cInvited to join:" to arg-2
+                        send "&aPrivate Chat Channel - %player%" to arg-2
+                        send "&7Do /priv accept to join" to arg-2
+                        send "&7---------------------" to arg-2
+                        add player to {invited::%arg-2%::*}
+                        send "&aYou have invited %arg-2% to the channel!" to player
+                    else:
+                        send "&cOnly the leader of the chat channel can invite" to player
+                else:
+                    send "&cThe specified player is not online" to player
+            else:
+                send "&cYou must specify a player to invite" to player
+        else if arg-1 is "accept":
+            if {invited::%player%::*} contains arg-2:
+                send "&cJoining Channel!" to player
+                wait 1 second
+                add player to {chatChannel::private::%arg-2%::*}
+                set {chatChannel::private::%player%} to true
+                remove arg-2 from {invited::%player%::*}
+                send "&aSuccess! Joined the chat channel" to player
+                loop {chatChannel::private::%arg-2%::*}:
+                    send "&7[&a+&7] &a%player% connected to the channel." to loop-value
+            else:
+                send "&cYou do not have an invite from %arg-2%" to player
+        else if arg-1 is "leave":
+            if {chatChannel::private::%player%} is true:
+                if {chatChannel::leader::%player%} is true:
+                    send "&cYou must do /settings and delete the channel as the leader!"
+                    stop
+                else:
+                    leaveParty(player)
+                    send "&cYou have left the chat channel" to player
+        else if arg-1 is "connected":
+            if {chatChannel::private::%player%} is true:
+                set {_CC} to getChannelOfPlayer(player)
+                send "&cConnected players are:"
+                wait 0.5 seconds
+                loop {chatChannel::private::%{_CC}%::*}:
+                    send "&7[&a+&7] &a%loop-value%"
+                    wait 0.7 seconds
+            else:
+                send "&cYou're not in a channel"
+        else:
+            send "&cIncorrect usage! Try: /priv [invite|accept|leave|connected] <player>" to player
+
+
+command test7:
+    trigger:
+        set {_test} to getChannelOfPlayer(player)
+        send "%{_test}%"
+
+
+on chat:
+    loop all players:
+        if {chatChannel::private::%loop-player%} is true:
+            remove loop-player from recipients
+
+
+command /clearall:
+    permission: admin.clearall
+    permission message: "&cYou don't have permission to use this command!"
+    trigger:
+        delete {chatChannel::private::*}
+        delete {chatChannel::leader::*}
+        delete {invited::*}
+        loop {chatChannel::private::*}:
+            delete {chatChannel::private::%loop-index%::*}
+        send "&aAll chat channel variables have been cleared!" to player
+
+on join:
+    loop all players:
+        if {settings::pvb::*} contains loop-player:
+            hide player from loop-player
+
+
+
+
+

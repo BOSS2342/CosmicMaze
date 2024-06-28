@@ -1,0 +1,246 @@
+command /jointeam [<text>] [<text>]:
+	permission: op
+	trigger:
+		if arg-1 is not "purple":
+			if arg-1 is not "green":
+				if arg-1 is not "cyan":
+					if arg-1 is not "gold":
+						if arg-1 is not "red":
+							if arg-1 is not "blue":
+								send "&cUnknown argument. Try: purple, gold, cyan, green, blue or red."
+								stop
+		if {teams} is not set:
+			set {teams} to true
+		add player to {teams::%arg-1%}
+		teleport player to {%arg-1%MazeLobby}
+		if arg-1 is "purple":
+			if {onTeam::%player%} is not set:
+				if {purpleTeamReady} is false:
+					set player's displayname to "&7&l[&r&5Purple&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Purple %player%"
+					add player to {teams::purple::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {purpleMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+		else if arg-1 is "green":
+			if {onTeam::%player%} is not set:
+				if {greenTeamReady} is false:
+					set player's displayname to "&7&l[&r&aGreen&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Green %player%"
+					add player to {teams::green::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {greenMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+		else if arg-1 is "gold":
+			if {onTeam::%player%} is not set:
+				if {goldTeamReady} is false:
+					set player's displayname to "&7&l[&r&6Gold&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Gold %player%"
+					add player to {teams::gold::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {goldMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+		else if arg-1 is "cyan":
+			if {onTeam::%player%} is not set:
+				if {cyanTeamReady} is false:
+					set player's displayname to "&7&l[&r&bCyan&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Cyan %player%"
+					add player to {teams::cyan::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {cyanMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+		else if arg-1 is "red":
+			if {onTeam::%player%} is not set:
+				if {redTeamReady} is false:
+					set player's displayname to "&7&l[&r&4Red&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Red %player%"
+					add player to {teams::red::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {redMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+		else if arg-1 is "blue":
+			if {onTeam::%player%} is not set:
+				if {blueTeamReady} is false:
+					set player's displayname to "&7&l[&r&1Blue&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Blue %player%"
+					add player to {teams::blue::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {blueMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+		else if arg-1 is "purple":
+			if {onTeam::%player%} is not set:
+				if {purpleTeamReady} is false:
+					set player's displayname to "&7&l[&r&5Purple&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Purple %player%"
+					add player to {teams::purple::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {purpleMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+		else if arg-1 is "green":
+			if {onTeam::%player%} is not set:
+				if {greenTeamReady} is false:
+					set player's displayname to "&7&l[&r&aGreen&r&7&l]&r: &l%player%"
+					execute console command "scoreboard teams join Green %player%"
+					add player to {teams::green::*}
+					send "&7You've joined the &b%arg-1% &7team!"
+					teleport player to {greenMazeSpawn}
+					play sound "entity_experience_orb_pickup" with volume 0.5 to player
+					set {onTeam::%player%} to true
+				else:
+					send "&cTeam is full and readied up! You can no longer join."
+			else:
+				send "&cYou're already on a team! Do /leaveteam to leave."
+
+		
+
+command /unready:
+	permission: op
+	trigger:
+		set {redTeamReady} to false
+		set {blueTeamReady} to false
+		set {goldTeamReady} to false
+		set {cyanTeamReady} to false
+		set {purpleTeamReady} to false
+		set {greenTeamReady} to false
+
+
+command /testteam:
+	permission: op
+	trigger:
+		send "&7Testing" to player
+		clear {teams}
+		loop {teams::*}:
+			broadcast "%loop-index%"
+			stop
+		
+
+command /clearteams:
+	permission: op
+	trigger:
+		delete {teams::*}
+		clear {teams::gold::*}
+		clear {teams::green::*}
+		clear {teams::red::*}
+		clear {teams::cyan::*}
+		clear {teams::blue::*}
+		delete {onTeam::%player%}
+		send "&cTeams Successfully cleared!"
+
+
+command /leaveteam:
+	permission: op
+	trigger:
+		set {_p} to player
+		set {_teamOfPlayer} to getTeamOfPlayer({_p})
+		broadcast {_teamOfPlayer}
+
+		if {inGame::%{_p}%} is true:
+			send "&cBrother.. you're legit in a game.."
+			send "&eJust play!"
+			stop
+		else if {onTeam::%{_p}%} is true:
+			set {_Team} to getTeamOfPlayer({_p})
+			execute console command "scoreboard teams leave %{_p}%"
+			clear {teams::%{_Team}%::*}
+			send "&cYou have left your team!"
+			delete {onTeam::%{_p}%}
+			teleport {_p} to {Lobby::Main}
+		else:
+			send "&cYou're not on a team!"
+
+#command /setmeingame:
+#	trigger:
+#		if {inGame} is not set:
+#			set {inGame} to true
+#		set {inGame::%player%} to true
+#		send "%indices of {inGame::*}%" to player
+#		send "Done"
+
+command /setcosmicpoint [<text>]:
+	permission: op
+	trigger:
+		if arg-1 is "blue":
+			set {blueMazeSpawn} to player's location
+			send "&9Blue&7 set."
+		if arg-1 is "red":
+			set {redMazeSpawn} to player's location
+			send "&4Red&7 set"
+		if arg-1 is "purple":
+			set {purpleMazeSpawn} to player's location
+			send "&5Purple &7set"
+		if arg-1 is "cyan":
+			set {cyanMazeSpawn} to player's location
+			send "&bCyan &7set"
+		if arg-1 is "gold":
+			set {goldMazeSpawn} to player's location
+			send "&6Gold &7set"
+		if arg-1 is "green":
+			set {greenMazeSpawn} to player's location
+			send "&aGreen &7set"
+
+command /listcosmicpoint:
+	trigger:
+		send "&3Here is the list of"
+		send "&3maze spawns set!"
+		if {blueMazeSpawn} is set:
+			send "&9Blue &7=&2 Set"
+		else:
+			send "&9Blue &7= &cNot set"
+		if {redMazeSpawn} is set:
+			send "&4Red &7=&2 Set"
+		else:
+			send "&4Red &7= &cNot set"
+		if {purpleMazeSpawn} is set:
+			send "&5Purple &7=&2 Set"
+		else:
+			send "&5Purple &7= &cNot set"
+		if {cyanMazeSpawn} is set:
+			send "&bCyan &7=&2 Set"
+		else:
+			send "&bCyan &7= &cNot set"
+		if {goldMazeSpawn} is set:
+			send "&6Gold &7=&2 Set"
+		else:
+			send "&6Gold &7= &cNot set"
+		if {greenMazeSpawn} is set:
+			send "&aGreen &7=&2 Set"
+		else:
+			send "&aGreen &7= &cNot set"
+		
+
+

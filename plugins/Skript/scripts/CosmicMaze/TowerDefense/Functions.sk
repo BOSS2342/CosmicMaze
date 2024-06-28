@@ -1,0 +1,101 @@
+function getTeamOfPlayerTD(p: player) :: object:
+    loop {TD::*}:
+        if {TD::%loop-index%::*} contains {_p}:
+            return loop-index
+        else:
+            return "false"
+
+function checkForReady():
+    if size of {TD::cyan::*} is greater than 0:
+        if size of {TD::gold::*} is greater than 0:
+            wait 2 seconds
+            countdown()
+            wait 5 seconds
+            generateRandomMap()
+            loop {TD::cyan::*}:
+                set {inTowerGame::%loop-value%} to true
+            loop {TD::gold::*}:
+                set {inTowerGame::%loop-value%} to true
+        else:
+            stop
+    else:
+        stop
+
+
+
+function countdown():
+    loop {TD::gold::*}:
+        send title "&e&lGame Starting" with subtitle "&45" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&64" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&e3" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&22" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&b1" to loop-value
+        send "&e&lGO GO GO!!" to loop-value
+        stop
+    loop {TD::cyan::*}:
+        send title "&e&lGame Starting" with subtitle "&45" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&64" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&e3" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&22" to loop-value
+        wait 1 seconds
+        send title "&e&lGame Starting" with subtitle "&b1" to loop-value
+        send "&e&lGO GO GO!!" to loop-value
+        stop
+
+function generateRandomMap():
+    set {_RI} to random integer between 1 and 1
+    if {_RI} is 1:
+        loop {TD::gold::*}:
+            teleport loop-value to {goldTowerDefense}
+            send "&eWelcome to tower defense!" to loop-value
+            send "&7--------------------" to loop-value
+            send "&bYour goal is to defend your coal, gold and diamond block." to loop-value
+            send "&bDo this by placing blocks around them" to loop-value
+            send "&bBuy blocks and tools from your shopkeeper" to loop-value
+            send "&7--------------------" to loop-value
+            send "&8Game by - Marrp" to loop-value
+            set {inTowerWaiting::%loop-value%} to false
+        loop {TD::cyan::*}:
+            teleport loop-value to {cyanTowerDefense}
+            send "&eWelcome to tower defense!" to loop-value
+            send "&7--------------------" to loop-value
+            send "&bYour goal is to defend your coal, gold and diamond block." to loop-value
+            send "&bDo this by placing blocks around them" to loop-value
+            send "&bBuy blocks and tools from your shopkeeper" to loop-value
+            send "&7--------------------" to loop-value
+            send "&8Game by - Marrp" to loop-value
+            set {inTowerWaiting::%loop-value%} to false
+
+function cyanLostCoal():
+    add 1 to {TDGold::*}
+    if {TDGold::*} is equal to 3:
+        gameEndCyanWin()
+        stop
+    else:
+        loop {TD::cyan::*}:
+            send "&cA teammate destroyed the opposing coal!" to loop-value
+        loop {TD::gold::*}:
+            send title "&cYour coal has been destroyed" to loop-value
+
+function goldLostCoal():
+    add 1 to {TDCyan::*}
+    if {TDCyan::*} is equal to 3:
+        gameEndCyanWin()
+        stop
+    else:
+        loop {TD::cyan::*}:
+            send "&cA teammate destroyed the opposing coal!" to loop-value
+        loop {TD::gold::*}:
+            send title "&cYour coal has been destroyed" to loop-value
+
+
+
+
+            

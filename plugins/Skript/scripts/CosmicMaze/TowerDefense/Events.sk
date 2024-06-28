@@ -1,0 +1,14 @@
+on death:
+    wait 0.5 seconds
+    if {TD::gold::*} contains victim:
+        teleport victim to {goldTowerDefense}
+    else if {TD::cyan::*} contains victim:
+        teleport victim to {cyanTowerDefense}
+
+on block break:
+    if event-block is a coal block:
+        set {_OT} to getTeamOfPlayer(player)
+        if {_OT} is "cyan":
+            goldLostCoal()
+        else if {_OT} is "gold":
+            cyanLostCoal()

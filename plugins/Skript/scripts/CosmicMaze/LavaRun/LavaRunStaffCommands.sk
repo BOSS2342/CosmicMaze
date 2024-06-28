@@ -1,0 +1,145 @@
+command /lavaRunInitiate:
+    permission: op
+    trigger:
+        set {lavaRun} to true
+        set {lavaRun::easy} to false
+        set {lavaRun::medium} to false
+        set {lavaRun::hard} to false
+
+command /iWon <player>:
+    permission: op
+    trigger:
+        set {wonLavaRun::%arg-1%} to true
+        teleport arg-1 to {spectatingLavaRun}
+        send title "&aYou won!" to arg-1
+        set arg-1's gamemode to spectator
+        set {_t} to lavaRunDifficultyOfPlayer(arg-1)
+        if size of {lavaRun::%{_t}%::*} is 1:
+            endLavaRun({_t})
+
+        
+command /nextStage <player>:
+    trigger:    
+        set {_x} to x-coordinate of arg-1
+        set {_y} to y-coordinate of arg-1
+        set {_z} to z-coordinate of arg-1
+        remove 8 from {_x}
+        add 1 to {_y}
+        remove 109 from {_z}
+        execute console command "/teleport %arg-1% %{_x}% %{_y}% %{_z}%"
+        send "&cCongrats! You staged up"
+        add 1 to {LavaRun::stage::%arg-1%}
+        if {LavaRun::stage::%arg-1%} is 4:
+            set {_t} to lavaRunDifficultyOfPlayer(arg-1)
+            endLavaRun({_t})
+            loop {lavaRun::%{_t}%::*}:
+                set {LavaRun::stage::%loop-value%} to 0
+                if loop-value is not arg-1:
+                    send title "&cLoss"
+                else:
+                    send "&aYou won!"
+                    add 1 to {LavaRun::wins::%loop-value%}
+
+
+command /stoplr [<text>]:
+    permission: op
+    trigger:
+        set {stop%arg-1%} to true
+        wait 20 seconds
+        set {stop%arg-1%} to false
+        send "&cProcess complete"
+
+    
+command /testLR [<text>]:
+    trigger:
+        if arg-1 is "test":
+            set {_t} to lavaRunDifficultyOfPlayer(player)
+            broadcast "%{_t}%"
+            broadcast " - %{lavaRun::easy::*}%"
+            broadcast " + %{lavaRun::*}%"
+        else if arg-1 is "fix":
+            clear {lavaRun::*}
+            add "easy" to {lavaRun::*}
+            add "medium" to {lavaRun::*}
+            add "hard" to {lavaRun::*}
+            add "Running" to {lavaRun::easy::*}
+            set {lavaRun::easy} to false
+            set {lavaRun::medium} to false
+            set {lavaRun::hard} to false
+        else if arg-1 is "clear":
+            clear {lavaRun::easy::*}
+            clear {lavaRun::medium::*}
+            clear {lavaRun::hard::*}
+        else if arg-1 is "disableGame":
+            clear {inGame::*}
+
+
+
+
+command /lavarun [<text>] [<text>] [<text>]:
+    trigger:
+        if arg-1 is "join":
+            if arg-2 is "easy":
+                lavaRunQueue(player, easy)
+                stop
+            else if arg-2 is "medium":
+                lavaRunQueue(player, medium)
+                stop
+            else if arg-2 is "Hard":
+                lavaRunQueue(player, hard)
+            else:
+                send "&cInvalid Argument! /lavarun [join|leave|start] [easy|medium|hard]"
+        else if arg-1 is "leave":
+            leaveLavaRunQueue(player)
+            
+        else:
+            send "&cInvalid Argument! /lavarun [join|leave|start] [easy|medium|hard]"
+
+
+command /setupLR [<text>] [<text>] [<text>]:
+    permission: op
+    trigger:
+        if arg-1 is "set":
+            if arg-2 is "Waiting":
+                set {waitingLavaRun} to player's location
+                send "&cWaiting position set."
+                stop
+
+            else if arg-2 is "hardStartPos":
+                set {hardStartPos} to player's location
+                send "&cHard Starting Position set."
+                stop
+
+            else if arg-2 is "mediumStartPos":
+                set {mediumStartPos} to player's location
+                send "&cMedium Starting Position set."
+                stop
+
+            else if arg-2 is "easyStartPos":
+                set {easyStartPos} to player's location
+                send "&cEasy Starting Position set."
+                stop
+            else if arg-2 is "easyp":
+                if arg-3 is set:
+                    set {easyPos%arg-3%} to player's position
+                    send "&ceasyPos%arg-3% set"
+                    stop
+            else:
+                send "&cInvalid argument: %arg-2%"
+                send "&7Try: &aeasyStartPos, mediumStartPos, hardStartPos or &eWaiting"
+                stop
+        else if arg-1 is "clearpoints":
+            clear {easyStartPos}
+            clear {mediumStartPos}
+            clear {hardStartPos}
+        else if arg-1 is "teleport":
+            if arg-2 is set:
+                if {%arg-2%StartPos} is set:
+                    teleport player to {%arg-2%StartPos}
+                else:
+                    send "&cThat location is not set!"
+            else:
+                send "&cPlease specify a difficulties position to teleport to"
+        else:
+            send "&cInvalid Usage: &6%arg-1%&a %arg-2%&c %arg-3%"
+            send "&7Try: &b/setup &7[&bset|clearpoints|teleport&7] [&aeasyStartPos, mediumStartPos, hardStartPos or &eWaiting&7]"

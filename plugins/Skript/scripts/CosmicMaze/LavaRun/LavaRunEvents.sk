@@ -1,0 +1,56 @@
+function leaveLavaRunQueue(p: player):
+    set {_dif} to getDifficultyOfPlayer({_p})
+    if {inGame::%{_p}%} is true:
+        send "&cYou're in a game, this means you shall not leave!" to {_p}
+        stop
+    if {lavaRun::%{_dif}%::*} contains {_p}:
+        teleport {_p} to {lobby::Main}
+        send "&cYou left queue for lava run %{_dif}%." to {_p}
+        remove {_p} from {lavaRun::%{_dif}%::*}
+
+function loseLavaRun(p: player):
+    set {_dif} to getDifficultyOfPlayer({_p})
+    if {lavaRun::%{_dif}%::*} contains {_p}:
+        set {inGame::%{_p}%} to false
+        remove {_p} from {lavaRun::%{_dif}%::*}
+        wait 1 tick
+        send title "&cYou died!" to {_p}
+        send "&cYou perished!" to {_p}
+        teleport {_p} to {Lobby::Main}
+        extinguish {_p}
+        heal {_p}
+        add 1 to {LavaRun::deaths::%{_p}%}
+        send "&c%{_p}% perished." to {lavaRun::%{_dif}%::*}
+        set {LavaRun::stage::%{_p}%} to 0
+
+on command "/l":
+    leaveLavaRunQueue(player)
+on command "/lobby":
+    leaveLavaRunQueue(player)
+on command "/hub":
+    leaveLavaRunQueue(player)
+on command "/spawn":
+    leaveLavaRunQueue(player)
+
+on damage of a player:
+    if damage is caused by fire:
+        loseLavaRun(victim)
+    else if damage is caused by lava:
+        loseLavaRun(victim)
+
+on player world change:
+    if {wonLavaRun::%player%} is true:
+        set {wonLavaRun::%player%} to false
+        add 1 to {LavaRun::wins::%player%}
+        wait 2 seconds
+        send title "&dYou were a WINNER!"
+
+on quit:
+    set {_t} to getDifficultyOfPlayer(player)
+    remove player from {lavaRun::%{_t}%::*}
+    set {inGame::%player%} to false
+
+
+
+
+

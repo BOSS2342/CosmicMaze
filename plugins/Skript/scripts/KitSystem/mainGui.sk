@@ -1,0 +1,13 @@
+function inGame(p: player) {
+
+
+}
+
+
+
+command /cyanKitGui [<text>]:
+    trigger:
+        if arg-1 is not set:
+            send "Please specify a player to open the gui for"
+        else:
+            create new gui with virtual chest named "&eKit Selection &7| &bCyan" with 7 rows

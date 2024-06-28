@@ -1,0 +1,742 @@
+function getDifficultyOfPlayer(p: player) :: object:
+	loop {lavaRun::*}:
+		if {lavaRun::%loop-value%::*} contains {_p}:
+			return loop-value
+
+command /testLR [<text>]:
+    trigger:
+        if arg-1 is "test":
+            set {_t} to getDifficultyOfPlayer(player)
+            broadcast "%{_t}%"
+            broadcast " - %{lavaRun::easy::*}%"
+            broadcast " + %{lavaRun::*}%"
+        else if arg-1 is "fix":
+            clear {lavaRun::*}
+            add "easy" to {lavaRun::*}
+            add "medium" to {lavaRun::*}
+            add "hard" to {lavaRun::*}
+            add "Running" to {lavaRun::easy::*}
+        else if arg-1 is "clear":
+            clear {lavaRun::easy::*}
+            clear {lavaRun::medium::*}
+            clear {lavaRun::hard::*}
+        else if arg-1 is "disableGame":
+            clear {inGame::*}
+
+function joinPlayerToEasy(p: player):
+    if {lavaRun::easy::*} contains {_p}:
+        send "&cYou're already in queue!" to {_p}
+    else if {inGame::%{_p}%} is true:
+        send "&cYou're already in a game." to {_p}
+        stop
+    else if {lavaRun::easy} isn't "Running":
+        
+        add {_p} to {lavaRun::easy::*}
+        send "&aConnecting to a match..." to {_p}
+        wait 1.3 seconds
+        send title "&6Lava Run" with subtitle "&7In Beta" to {_p}
+        send "&bYou have joined the queue for &6Lava Run | &aEasy" to {_p}
+        teleport {_p} to {waitingLavaRun}
+        checkIfReadyEasy()
+    else:
+        send "&cThe game is currently running" to {_p}
+        stop
+
+function joinPlayerToMedium(p: player):
+    if {lavaRun::medium::*} contains {_p}:
+        send "&cYou're already in queue!" to {_p}
+    else if {inGame::%{_p}%} is true:
+        send "&cYou're already in a game." to {_p}
+        stop
+    else if {lavaRun::medium} isn't "Running":
+        add {_p} to {lavaRun::medium::*}
+        send "&aConnecting to a match..." to {_p}
+        wait 1.3 seconds
+        send title "&6Lava Run" with subtitle "&7In Beta" to {_p}
+        send "&bYou have joined the queue for &6Lava Run | &eMedium" to {_p}
+        teleport {_p} to {waitingLavaRun}
+        checkIfReadyMedium()
+    else:
+        send "&cThe game is currently running" to {_p}
+        stop
+
+function joinPlayerToHard(p: player):
+    if {lavaRun::hard::*} contains {_p}:
+        send "&cYou're already in queue!" to {_p}
+    else if {inGame::%{_p}%} is true:
+        send "&cYou're already in a game." to {_p}
+        stop
+    else if {lavaRun::hard} isn't "Running":
+        
+        add {_p} to {lavaRun::hard::*}
+        send "&aConnecting to a match..." to {_p}
+        wait 1.3 seconds
+        send title "&6Lava Run" with subtitle "&7In Beta" to {_p}
+        send "&bYou have joined the queue for &6Lava Run | &4Hard" to {_p}
+        teleport {_p} to {waitingLavaRun}
+        checkIfReadyHard()
+    else:
+        send "&cThe game is currently running" to {_p}
+        stop
+
+
+function leavePlayerLavaRun(p: player):
+    set {_top} to getDifficultyOfPlayer({_p})
+    if {_top} is "false":
+        send "&cYou're not in a lava run game." to {_p}
+        stop
+    else if {inGame::%{_p}%} is true:
+        send "&cYou're in a game, this means you shall not leave!" to {_p}
+        stop
+    else:
+        remove {_p} from {lavaRun::%{_top}%::*}
+        teleport {_p} to {Lobby::Main}
+        send "&cYou have left your lava run match!" to {_p}
+        stop
+
+
+
+
+function checkIfReadyEasy():
+    if size of {lavaRun::easy::*} is greater than 2:
+        stop
+    else if size of {lavaRun::easy::*} is greater than 1:
+        startLavaRunEasy()
+        
+        loop {lavaRun::easy::*}:
+            set {inGame::%loop-value%} to true
+    else:
+        stop
+
+function checkIfReadyMedium():
+    if size of {lavaRun::medium::*} is greater than 2:
+        stop
+    else if size of {lavaRun::medium::*} is greater than 1:
+        startLavaRunMedium()
+    else:
+        stop
+
+function checkIfReadyHard():
+    if size of {lavaRun::hard::*} is greater than 2:
+        stop
+    else if size of {lavaRun::hard::*} is greater than 1:
+        startLavaRunHard()
+    else:
+        stop
+
+
+
+
+function startLavaRunEasy():
+    if world "LavaRuneasy" does not exist:
+        execute console command "/mv clone LavaRunMaster LavaRuneasy"
+        wait 10 ticks
+        execute console command "/mvconfirm"
+        wait 20 ticks
+        execute console command "/mv import LavaRuneasy normal -g VoidGen"
+        execute console command "/mv load LavaRunMaster"
+    set {easyStartPos} to location(45.5, 77, -46.5, world("LavaRuneasy"))
+    send "&eGame beginning in 30 seconds" to {lavaRun::easy::*}
+    wait 15 seconds
+    send "&eGame beginning in 15 seconds" to {lavaRun::easy::*}
+    wait 5 seconds
+    send "&eGame beginning in 10 seconds" to {lavaRun::easy::*}
+    wait 5 seconds
+    send title "&eGame Starting" with subtitle "&45" to {lavaRun::easy::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::easy::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&64" to {lavaRun::easy::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::easy::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&e3" to {lavaRun::easy::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::easy::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&22" to {lavaRun::easy::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::easy::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&11" to {lavaRun::easy::*}
+    teleport {lavaRun::easy::*} to {easyStartPos}
+    play sound "random.levelup" with volume 0.5 to {lavaRun::easy::*}
+    send "&cBest run from the lava!" to {lavaRun::easy::*}
+    startLavaEasy()
+
+function startLavaRunHard():
+    if world "LavaRunhard" does not exist:
+        execute console command "/mv clone LavaRunMaster LavaRunhard"
+        wait 10 ticks
+        execute console command "/mvconfirm"
+        wait 20 ticks
+        execute console command "/mv import LavaRunhard normal -g VoidGen"
+        execute console command "/mv load LavaRunMaster"
+    set {hardStartPos} to location(45.5, 77, -46.5, world("LavaRunhard"))
+    send "&eGame beginning in 30 seconds" to {lavaRun::hard::*}
+    wait 15 seconds
+    send "&eGame beginning in 15 seconds" to {lavaRun::hard::*}
+    wait 5 seconds
+    send "&eGame beginning in 10 seconds" to {lavaRun::hard::*}
+    wait 5 seconds
+    send title "&eGame Starting" with subtitle "&45" to {lavaRun::hard::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::hard::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&64" to {lavaRun::hard::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::hard::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&e3" to {lavaRun::hard::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::hard::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&22" to {lavaRun::hard::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::hard::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&11" to {lavaRun::hard::*}
+    play sound "random.levelup" with volume 0.5 to {lavaRun::hard::*}
+    teleport {lavaRun::hard::*} to {hardStartPos}
+    send "&cBest run from the lava!" to {lavaRun::hard::*}
+    startLavaHard()
+
+function startLavaRunMedium():
+    if world "LavaRunmedium" does not exist:
+        execute console command "/mv clone LavaRunMaster LavaRunmedium"
+        wait 10 ticks
+        execute console command "/mvconfirm"
+        wait 20 ticks
+        execute console command "/mv import LavaRunmedium normal -g VoidGen"
+        execute console command "/mv load LavaRunMaster"
+    set {mediumStartPos} to location(45.5, 77, -46.5, world("LavaRunmedium"))
+    send "&eGame beginning in 30 seconds" to {lavaRun::medium::*}
+    wait 15 seconds
+    send "&eGame beginning in 15 seconds" to {lavaRun::medium::*}
+    wait 5 seconds
+    send "&eGame beginning in 10 seconds" to {lavaRun::medium::*}
+    wait 5 seconds
+    send title "&eGame Starting" with subtitle "&45" to {lavaRun::medium::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::medium::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&64" to {lavaRun::medium::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::medium::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&e3" to {lavaRun::medium::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::medium::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&22" to {lavaRun::medium::*}
+    play sound "note.bass" with volume 0.5 to {lavaRun::medium::*}
+    wait 1 seconds
+    send title "&eGame Starting" with subtitle "&11" to {lavaRun::medium::*}
+    teleport {lavaRun::medium::*} to {mediumStartPos}
+    play sound "random.levelup" with volume 0.5 to {lavaRun::medium::*}
+    send "&cBest run from the lava!" to {lavaRun::medium::*}
+    startLavaMedium()
+
+    
+function startLavaEasy():
+    set {lavaRun::easy} to "Running"
+    set {_x} to 43.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_world} to "LavaRuneasy"
+    set {_x2} to 47.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    loop 122 times:
+        if {stopEasy} is true:
+            stop
+        else:
+            wait 3 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+    set {_x} to 35.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 39.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    send "&cLava has progressed to level &a2" to {lavaRun::easy::*}
+    loop {lavaRun::easy::*}:
+        if {LavaRun::stage::%loop-value%} is less than 1:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        wait 2 seconds
+        add 1 to {_z}
+        add 1 to {_z2}
+        set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+        set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+        loop blocks between {_1} and {_2}:
+            if loop-block is air:
+                set loop-block to lava
+
+    set {_x} to 27.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 31.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    send "&cLava has progressed to level &a3" to {lavaRun::easy::*}
+    loop {lavaRun::easy::*}:
+        if {LavaRun::stage::%loop-value%} is less than 2:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        wait 1 seconds
+        add 1 to {_z}
+        add 1 to {_z2}
+        set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+        set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+        loop blocks between {_1} and {_2}:
+            if loop-block is air:
+                set loop-block to lava
+    set {_x} to 19.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 31.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    
+    send "&cLava has progressed to level &a4" to {lavaRun::easy::*}
+    loop {lavaRun::easy::*}:
+        if {LavaRun::stage::%loop-value%} is less than 3:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        wait 0.5 seconds
+        add 1 to {_z}
+        add 1 to {_z2}
+        set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+        set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+        loop blocks between {_1} and {_2}:
+            if loop-block is air:
+                set loop-block to lava
+    endLavaRunGame(easy)
+
+function startLavaMedium():
+    set {lavaRun::medium} to "Running"
+    set {_x} to 43.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_world} to "LavaRunmedium"
+    set {_x2} to 47.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    loop 122 times:
+        if {stopMedium} is true:
+            stop
+        else:
+            wait 2 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+    set {_x} to 35.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 39.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    send "&cLava has progressed to level &a2" to {lavaRun::medium::*}
+    loop {lavaRun::medium::*}:
+        if {LavaRun::stage::%loop-value%} is less than 1:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        if {stopMedium} is true:
+            stop
+        else:
+            wait 1 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+
+    set {_x} to 27.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 31.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    send "&cLava has progressed to level &a3" to {lavaRun::medium::*}
+    loop {lavaRun::medium::*}:
+        if {LavaRun::stage::%loop-value%} is less than 2:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        if {stopMedium} is true:
+            stop
+        else:
+            wait 0.5 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+    set {_x} to 19.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 31.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    
+    send "&cLava has progressed to level &a4" to {lavaRun::medium::*}
+    loop {lavaRun::medium::*}:
+        if {LavaRun::stage::%loop-value%} is less than 3:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        if {stopMedium} is true:
+            stop
+        else:
+            wait 0.5 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+    endLavaRunGame(medium)
+
+function startLavaHard():
+    set {lavaRun::hard} to "Running"
+    set {_x} to 43.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_world} to "LavaRunhard"
+    set {_x2} to 47.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    loop 122 times:
+        if {stopMedium} is true:
+            stop
+        else:
+            wait 0.5 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+    set {_x} to 35.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 39.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    send "&cLava has progressed to level &a2" to {lavaRun::hard::*}
+    loop {lavaRun::hard::*}:
+        if {LavaRun::stage::%loop-value%} is less than 1:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        if {stopHard} is true:
+            stop
+        else:
+            wait 0.3 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+
+    set {_x} to 27.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 31.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    send "&cLava has progressed to level &a3" to {lavaRun::hard::*}
+    loop {lavaRun::hard::*}:
+        if {LavaRun::stage::%loop-value%} is less than 2:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+
+    loop 122 times:
+        if {stopMedium} is true:
+            stop
+        else:
+            wait 0.25 seconds
+            add 1 to {_z}
+            add 1 to {_z2}
+            set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+            set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+            loop blocks between {_1} and {_2}:
+                if loop-block is air:
+                    set loop-block to lava
+    set {_x} to 19.5
+    set {_y} to 81
+    set {_z} to -58.5
+    set {_x2} to 31.5
+    set {_y2} to 81
+    set {_z2} to -58.5
+    set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+    set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+    loop blocks between {_1} and {_2}:
+        if loop-block is air:
+            set loop-block to lava
+    
+    send "&cLava has progressed to level &a4" to {lavaRun::hard::*}
+    loop {lavaRun::hard::*}:
+        if {LavaRun::stage::%loop-value%} is less than 3:
+            set {_t} to getDifficultyOfPlayer(loop-value)
+            if {lavaRun::%{_t}%::*} contains loop-value:
+                set {inGame::%loop-value%} to false
+                remove loop-value from {lavaRun::%{_t}%::*}
+                wait 1 tick
+                send title "&cYou died!" to loop-value
+                send "&cYou perished!" to loop-value
+                teleport loop-value to {Lobby::Main}
+                extinguish the loop-value
+                heal the loop-value
+                add 1 to {LavaRun::deaths::%loop-value%}
+                send "&c%loop-value% perished." to {lavaRun::%{_t}%::*}
+                set {LavaRun::stage::%loop-value%} to 0
+
+    loop 122 times:
+        wait 0.5 seconds
+        add 1 to {_z}
+        add 1 to {_z2}
+        set {_1} to location at {_x}, {_y}, {_z} in world "%{_world}%"
+        set {_2} to location at {_x2}, {_y2}, {_z2} in world "%{_world}%"
+        loop blocks between {_1} and {_2}:
+            if loop-block is air:
+                set loop-block to lava
+    endLavaRunGame(hard)
+
+
+function endLavaRunGame(o: object):
+    set {lavaRun::%{_o}%} to false
+    send title "&aGame Over" to {lavaRun::%{_o}%::*}
+    teleport {lavaRun::%{_o}%::*} to {lobby::main}
+    send "&bGame has ended!" to {lavaRun::%{_o}%::*}
+    send "&7--------------" to {lavaRun::%{_o}%::*}
+    execute console command "mv delete LavaRun%{_o}%"
+    wait 1 ticks
+    execute console command "mv confirm"
+
+    loop {lavaRun::%{_o}%::*}:
+        set {LavaRun::stage::%loop-value%} to 0
+        send "&cOver All LavaRun Stats:" to {lavaRun::%{_o}%::*}
+        send "&eYou've staged up: &7%{lavaRunStats::%loop-value%::stageUps}%" to {lavaRun::%{_o}%::*}
+        send "&eYou have: %{LavaRun::wins::%loop-value%}% wins" to {lavaRun::%{_o}%::*}
+        remove loop-value from {lavaRun::%{_o}%::*}
+        set {inGame::%loop-value%} to false
+
+
+
+
+
+
+command /gigitty [<text>]:
+    permission: op
+    trigger:       
+        if arg-1 is "gig":
+            startLavaEasy()
+            send "Done"
+        else if arg-1 is "fixmedium":
+            set {lavaRun::medium} to false
+        else if arg-1 is "endGameLavaRunE":
+            endLavaRunGame(easy)
+        else if arg-1 is "endGameLavaRunH":
+            endLavaRunGame(hard)
+        else if arg-1 is "test1":
+            loop {lavaRun::hard::*}:
+                send loop-value
+        else if arg-1 is "test2":
+            send "%{hardStartPos}%"
+            teleport player to {hardStartPos}
+        else if arg-1 is "test3":
+            send "%{easyStartPos}%"
+            teleport player to {easyStartPos}
+        else if arg-1 is "clearall":
+            clear {lavaRun::easy::*}
+            clear {lavaRun::medium::*}
+            clear {lavaRun::hard::*}
+            set {lavaRun::easy} to false
+            set {lavaRun::medium} to false
+            set {lavaRun::hard} to false
+            set {inGame::%player%} to false
+
+        else:
+            if {gigitty} is false:
+                set {gigitty} to true
+                send "True"
+            else:
+                set {gigitty} to false
+                send "False"
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+command /removeparentfromworld <text> <text>:
+    description: Remove a parent group from all players in a specified world.
+    usage: /removeparentfromworld <world> <parentGroup>
+    permission: yourplugin.removeparentfromworld
+    trigger:
+        set {_worldName} to arg-1
+        set {_parentGroup} to arg-2
+        set {_world} to world named {_worldName}
+        
+        if {_world} is not set:
+            send "World named '%{_worldName}%' not found."
+        else:
+            loop all players in {_world}:
+                execute console command "lp user %loop-player% parent remove spectator-tourney"
+            send "Removed parent group '{_parentGroup}' from all players in world '{_worldName}'."

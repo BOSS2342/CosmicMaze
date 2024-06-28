@@ -1,0 +1,94 @@
+
+on command "/l":
+    set {_d} to getDifficultyOfPlayer(player)
+    if {lavaRun::%{_d}%::*} contains player:
+        if {inGame::%player%} is false:
+            teleport player to {lobby::Main}
+            send "&cYou left queue for lava run %{_d}%."
+            remove player from {lavaRun::%{_d}%::*}
+        else:
+            send "&cYou're in a game and cannot perform that command"
+on command "/lobby":
+    set {_d} to getDifficultyOfPlayer(player)
+    if {lavaRun::%{_d}%::*} contains player:
+        if {inGame::%player%} is false:
+            teleport player to {lobby::Main}
+            send "&cYou left queue for lava run %{_d}%."
+            remove player from {lavaRun::%{_d}%::*}
+        else:
+            send "&cYou're in a game and cannot perform that command"
+on command "/hub":
+    set {_d} to getDifficultyOfPlayer(player)
+    if {lavaRun::%{_d}%::*} contains player:
+        if {inGame::%player%} is false:
+            teleport player to {lobby::Main}
+            send "&cYou left queue for lava run %{_d}%."
+            remove player from {lavaRun::%{_d}%::*}
+        else:
+            send "&cYou're in a game and cannot perform that command"
+on command "/spawn":
+    set {_d} to getDifficultyOfPlayer(player)
+    if {lavaRun::%{_d}%::*} contains player:
+        if {inGame::%player%} is false:
+            teleport player to {lobby::Main}
+            send "&cYou left queue for lava run %{_d}%."
+            remove player from {lavaRun::%{_d}%::*}
+        else:
+            send "&cYou're in a game and cannot perform that command"
+
+
+
+on damage:
+    if damage is caused by fire:
+        set {_t} to getDifficultyOfPlayer(victim)
+        if {lavaRun::%{_t}%::*} contains player:
+            set {inGame::%victim%} to false
+            remove victim from {lavaRun::%{_t}%::*}
+            wait 1 tick
+            send title "&cYou died!" to victim
+            send "&cYou perished!" to victim
+            teleport victim to {Lobby::Main}
+            extinguish the victim
+            heal the victim
+            add 1 to {LavaRun::deaths::%victim%}
+            send "&c%victim% perished." to {lavaRun::%{_t}%::*}
+            set {LavaRun::stage::%victim%} to 0
+    else if damage is caused by lava:
+        set {_t} to getDifficultyOfPlayer(victim)
+        if {lavaRun::%{_t}%::*} contains player:
+            set {inGame::%victim%} to false
+            remove victim from {lavaRun::%{_t}%::*}
+            wait 1 tick
+            send title "&cYou died!" to victim
+            send "&cYou perished!" to victim
+            teleport victim to {Lobby::Main}
+            extinguish the victim
+            heal the victim
+            add 1 to {LavaRun::deaths::%victim%}
+            send "&c%victim% perished." to {lavaRun::%{_t}%::*}
+            set {LavaRun::stage::%victim%} to 0
+
+
+command /playsound:
+    trigger:
+        play sound "random.levelup" with volume 1 and pitch 1 at player for player
+
+
+
+
+on player world change:
+    if {wonLavaRun::%player%} is true:
+        set {wonLavaRun::%player%} to false
+        add 1 to {LavaRun::wins::%player%}
+        wait 2 seconds
+        send title "&dYou were a WINNER!"
+
+on quit:
+    set {_t} to getDifficultyOfPlayer(player)
+    remove player from {lavaRun::%{_t}%::*}
+    set {inGame::%player%} to false
+
+
+
+
+

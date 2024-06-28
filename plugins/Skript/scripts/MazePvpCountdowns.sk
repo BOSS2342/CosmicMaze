@@ -1,0 +1,64 @@
+command /mazeTimeStart <text>:
+    permission: op
+    trigger:
+        if arg-1 is "crrot":
+            set {seconds} to 120
+            while {seconds} > 0:
+                loop all players in world "crrot":
+                    send action bar "&c%{seconds}% &aSeconds Remaining!" to loop-player
+                set {seconds} to {seconds} - 1
+                wait 1 second
+        if arg-1 is "game5":
+            set {5seconds} to 120
+            while {5seconds} > 0:
+                loop all players in world "game5":
+                    send action bar "&c%{5seconds}% &aSeconds Remaining!" to loop-player
+                set {5seconds} to {5seconds} - 1
+                wait 1 second
+        if arg-1 is "game3":
+            set {3seconds} to 120
+            while {3seconds} > 0:
+                loop all players in world "game3":
+                    send action bar "&c%{3seconds}% &aSeconds Remaining!" to loop-player
+                set {3seconds} to {3seconds} - 1
+                wait 1 second
+command /craftTimeStart <text>:
+    permission: op
+    trigger:
+        if arg-1 is "crrot":
+            set {seconds} to 60
+            while {seconds} > 0:
+                loop all players in world "crrot":
+                    send action bar "&c%{seconds}% &aSeconds Remaining!" to loop-player
+                set {seconds} to {seconds} - 1
+                wait 1 second
+        if arg-1 is "game5":
+            set {5seconds} to 60
+            while {5seconds} > 0:
+                loop all players in world "game5":
+                    send action bar "&c%{5seconds}% &aSeconds Remaining!" to loop-player
+                set {5seconds} to {5seconds} - 1
+                wait 1 second
+        if arg-1 is "game3":
+            set {3seconds} to 60
+            while {3seconds} > 0:
+                loop all players in world "game3":
+                    send action bar "&c%{3seconds}% &aSeconds Remaining!" to loop-player
+                set {3seconds} to {3seconds} - 1
+                wait 1 second
+
+command /clearMazeTime <text>:
+    permission: op
+    trigger:
+        if arg-1 is "crrot":
+            set {seconds} to 0
+            send "Maze time for crrot has been cleared."
+        else if arg-1 is "game5":
+            set {5seconds} to 0
+            send "Maze time for game5 has been cleared."
+        else if arg-1 is "game3":
+            set {3seconds} to 0
+            send "Maze time for game3 has been cleared."
+        else:
+            send "Invalid game name. Please use crrot, game5, or game3."
+

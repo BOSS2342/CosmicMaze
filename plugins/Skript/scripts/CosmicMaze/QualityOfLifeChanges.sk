@@ -1,0 +1,10 @@
+on chat:
+    if message contains "[discord]" or "[d]":
+        replace "[discord]" in message with "&r&chttps://discord.com/invite/bfseCZbGRp"
+        replace "[d]" in message with "&r&chttps://discord.com/invite/bfseCZbGRp"
+
+command /discord:
+    trigger:
+        send "&7[&bDiscord&7] &r&chttps://discord.com/invite/bfseCZbGRp" to player
+
+

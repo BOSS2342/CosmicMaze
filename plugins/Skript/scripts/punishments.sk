@@ -1,0 +1,88 @@
+on chat:
+    if message contains "nigger" or "nigga" or "kys" or "faggot":  # Add more bad words as needed
+        add "&7%now%&r: &b%player% &7->&8 %message%" to {badlanguage::%player%::*}
+        wait 0.5 seconds
+        send "&cYour most recent message has been sent, but has also been logged for review by moderators. Please be respectful on our server." to player
+        execute console command "messagefromconsole Check %player%'s chat logs using RBL"
+        execute console command "modmail -- RBL -- %player% said: &6%message%&b"
+        if {punishments::%player%} is not set:
+            set {punishments::%player%} to 0
+        if {punishments::%player%} is 0:
+            set {tagged::%player%} to true
+            increase {punishments::%player%} by 1
+            send "&cYou have been punished for recent messages! The punishment lasts for 5 minutes. Please be respectful!" to player
+            wait 5 minutes
+            set {tagged::%player%} to false
+            send "&aYour punishment has been lifted. Please be respectful in future messages." to player
+        else if {punishments::%player%} is 1:
+            set {tagged::%player%} to true
+            increase {punishments::%player%} by 1
+            send "&cYou have been punished for recent messages! The punishment lasts for 10 minutes. This is your second offense. Please be respectful!" to player
+            kick player due to "&4Warning: &6Punishments get worse the more you break our rules. This is your second offense!"
+            wait 10 minutes
+            set {tagged::%player%} to false
+            send "&aYour punishment has been lifted. Please be respectful in future messages." to player
+        else if {punishments::%player%} >= 2:
+            set {bannedL::%player%} to true
+            kick player due to "&2You have been banned! Talk to a moderator for an appeal."
+
+command /punishments <text> <text> [<text>] [<text>]:
+    permission: skript.managepunishments
+    trigger:
+        if player is not op:
+            send "&cYou cannot manage player punishments!" to player
+            stop
+        else if arg-1 is "reset":
+            if arg-2 is set:
+                set {punishments::%arg-2%} to 0
+                set {tagged::%arg-2%} to false
+                send "&a%arg-2%'s punishments have been reset!" to player
+                set {bannedL::%arg-2%} to false
+                send "&a%arg-2% has been unbanned!" to player
+            else:
+                send "&cPlease specify a player whose punishments you want to reset." to player
+        else if arg-1 is "add":
+            if arg-2 is not set:
+                send "&cPlease specify a player to punish." to player
+                stop
+            if arg-3 is not set:
+                send "&cPlease specify a punishment type." to player
+                stop
+            if arg-3 is "ban":
+                set {bannedL::%arg-2%} to true
+                send "&a%arg-2% has been banned!" to player
+            else if arg-3 is "mute":
+                if arg-4 is set:
+                    set {muteTime::%arg-2%} to arg-4 parsed as timespan
+                    send "&a%arg-2% has been muted for %arg-4%!" to player
+                else:
+                    send "&cPlease specify a time for the mute." to player
+                    stop
+            else if arg-3 is "warn":
+                if arg-4 is set:
+                    add 1 to {punishments::%arg-2%}
+                    send "&a%arg-2% has been warned for: %arg-4%!" to player
+                else:
+                    send "&cPlease specify a reason for the warning." to player
+                    stop
+            else:
+                send "&cInvalid punishment type. Use ban, mute, or warn." to player
+        else:
+            send "&cInvalid command. Use /punishments add <player> <punishment type> [time] [reason] or /punishments reset <player>." to player
+
+
+on player move:
+    if {bannedL::%player%} is true:
+        kick the player due to "&6You have been banned! Please contact an administrator if you believe this is a mistake."
+
+
+        
+on join:
+    if {bannedL::%player%} is true:
+        kick player due to "&cYou have been punished!&6 Talk to a moderator to appeal!"
+
+
+on chat:
+    if {tagged::%player%} is true:
+        send "&6You have been punished for recent messages! The punishment lasts for 5 minutes. Please be respectful!" to player
+        cancel event

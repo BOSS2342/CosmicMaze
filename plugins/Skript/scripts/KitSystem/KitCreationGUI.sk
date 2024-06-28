@@ -1,0 +1,162 @@
+function deleteTempKitStorage(p: player):
+    delete {tempKitStorage::%{_p}%::*}
+    delete {tempKitStorage::%{_p}%}
+
+function createKitGUI(p: player, name: text):
+    set {_gui} to chest inventory with 4 rows named "Create Kit" 
+
+    if {tempKitStorage} is not set:
+        set {tempKitStorage} to true
+
+    if {tempKitStorage::%{_p}%} is set:
+        set {_iterations} to 0
+        set slot (integers between 0 and 26) of {_gui} to air
+        set slot 27 of {_gui} to name tag named "&5%{_name}%"
+        set slot 28 of {_gui} to nether star named "&5Put Kit Display Item Here"
+        set slot (integers between 29 and 33) of {_gui} to light gray stained glass pane named "&7None"
+        set slot 31 of {_gui} to barrier named "&8Clear Kit"
+        set slot 34 of {_gui} to green stained glass pane named "&2Confirm"
+        set slot 35 of {_gui} to red stained glass pane named "&4Cancel"
+        loop {tempKitStorage::%{_p}%::*}:
+            set slot {_iterations} of {_gui} to loop-value
+            add 1 to {_iterations}
+
+    if {tempKitStorage::%{_p}%} is not set:
+        set slot (integers between 0 and 26) of {_gui} to air
+        set slot 27 of {_gui} to name tag named "&5%{_name}%"
+        set slot 28 of {_gui} to nether star named "&5Put Kit Display Item Here"
+        set slot (integers between 29 and 33) of {_gui} to light gray stained glass pane named "&7None"
+        set slot 31 of {_gui} to barrier named "&8Clear Kit"
+        set slot 34 of {_gui} to green stained glass pane named "&2Confirm"
+        set slot 35 of {_gui} to red stained glass pane named "&4Cancel"
+
+    open {_gui} to {_p}
+
+function confirmCreation(p: player, kitName: text, kitItem: item):
+    set {_gui} to chest inventory with 1 row named "Confirm Creation"
+
+    set slot 0 of {_gui} to {_kitItem} named {_kitName}
+    set slot 7 of {_gui} to green stained glass pane named "&2Confirm"
+    set slot 8 of {_gui} to red stained glass pane named "&4Cancel"
+
+    open {_gui} to {_p}
+
+
+
+on inventory click:
+    #Create A Kit
+    if name of event-inventory is "Create Kit":
+
+        #Temporary Storage for the kit, this allows the saving of the kit
+        #In between menus
+        set {tempKitStorage::%player%} to true
+        set {tempKitStorage::%player%::*} to saveInventorySlots(player's current inventory, 36)
+
+        #Set kit's name, item type, along with the uncolored name
+        set {_kitName} to name of slot 27 of event-inventory
+        set {_kitItem} to type of slot 28 of event-inventory
+
+        #Swap Item, Delete Old Item, Rename
+        if inventory action is swap cursor stack:
+            if index of clicked slot is 28:
+                if cursor slot of player is not air:
+                    wait 1 tick
+                    set cursor slot of player to air
+                    set slot 28 of event-inventory to type of slot 28 of event-inventory named "&5Put Kit Display Item Here"
+
+        #Make sure that only the bottom row has interaction
+        if floor(index of clicked slot / 9) is 3:
+            cancel event
+
+            #Move on to Kit Confirmation (No creation is done here)
+            if clicked slot is green stained glass pane:
+                loop 27 times:
+                    give player {tempKitStorage::%player%::%loop-number%}
+                give player {tempKitStorage::%player%::29}
+                close player's inventory
+                send "Confirm Creation of kit: %{_kitName}%"
+                confirmCreation(player, {_kitName}, {_kitItem})
+            
+            #If you cancel it will give all items to you and then delete the
+            #Temporary Storage for the kit
+            if clicked slot is red stained glass pane:
+                loop 27 times:
+                    give player {tempKitStorage::%player%::%loop-number%}
+                give player {tempKitStorage::%player%::29}
+                close player's inventory
+                deleteTempKitStorage(player)
+
+            #If you clear it give all items back, delete Temp storage, 
+            #and return to this menu
+            if clicked slot is barrier named "&8Clear Kit":
+                loop 27 times:
+                    give player {tempKitStorage::%player%::%loop-number%}
+                give player {tempKitStorage::%player%::29}
+                deleteTempKitStorage(player)
+                createKitGUI(player, {_kitName})
+
+    #Confirm Creation of Kit
+    if name of event-inventory is "Confirm Creation":
+        cancel event
+        set {_kitItem} to type of slot 0 of event-inventory
+        set {_kitName} to name of slot 0 of event-inventory
+
+        #Kit should now be created
+        if clicked slot is green stained glass pane:
+
+            #Make sure all variables are properly initilized
+            #kits::0 should exists first
+            if {kits} is not set:
+                set {kits} to true
+                set {_kitIndex} to 0
+            else:
+                set {_kitIndex} to size of {kits::*}
+            
+            set {kits::%{_kitIndex}%} to {_kitName}
+            set {kits::%{_kitIndex}%::kitItem} to {_kitItem}
+
+            #Set each item in the proper order
+            loop 27 times:
+                set {kits::%{_kitIndex}%::items::%loop-number%} to {tempKitStorage::%player%::%loop-number%}
+
+            #Close the players inventory, delete temp storage
+            close player's inventory
+            deleteTempKitStorage(player)
+            send "Kit %{_kitName}%&r saved" to player
+
+        #Return to the previous menu
+        if clicked slot is red stained glass pane:
+            close player's inventory
+            createKitGUI(player, {_kitName})
+
+
+command clearKits <boolean = false>:
+    permission: op
+    trigger:
+        if arg-1 is true:
+            delete {tempKitStorage::%player%::*}
+            delete {tempKitStorage::%player%}
+        else:
+            send "&4Clearing Kits" to player
+            loop {kits::*}:
+                loop {kits::%loop-index-1%::*}:
+                    delete {kits::%loop-index-1%::%loop-index-2%::*}
+                delete {kits::%loop-index-1%::*}
+            delete {kits::*}
+
+command allKits:
+    permission: op
+    trigger:
+        loop {kits::*}:
+            send "%{kits::%loop-index%}%" to player
+
+command createNewKit <text>:
+    aliases: kitnew
+    permission: op
+    trigger:
+        if player's target block is chest:
+            set {tempKitStorage::%player%} to true
+            set {tempKitStorage::%player%::*} to saveInventorySlots( inventory of (player's target block), 27)
+        send "%player's target block%" to player
+
+        createKitGUI(player, arg-1)

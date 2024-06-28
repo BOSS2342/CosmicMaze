@@ -1,0 +1,81 @@
+on death:
+	set {_teamOfPlayer} to getTeamOfPlayer(victim)
+	if {deaths} is not set:
+		set {deaths} to true
+	if {deaths::%victim%} is not set:
+		set {deaths::%victim%} to 0
+
+	if {deaths::%victim%} < 3:
+		add 1 to {deaths::%victim%}
+		send "&7You have died &b%{deaths::%victim%}% times" to victim
+		#Set player to spectator
+	if {deaths::%victim%} >= 3:
+		execute console command "/spectate %victim%"
+		send "&6You're out" to victim
+		send "&7You're now spectating the match" to victim
+		set {deaths::%victim%} to 0
+		set {dead::%victim%} to true
+
+
+on death:
+	set {_teamOfPlayer2} to getTeamOfPlayer(victim)
+	loop {teams::%{_teamOfPlayer2}%::*}:
+
+		if {dead::%loop-value%} is true:
+			continue
+			if {teamDead::%{_teamOfPlayer2}%} is true:
+				execute console command "/endgame %{_teamOfPlayer2}%"
+				loop {teams::%{_teamOfPlayer2}%::*}:
+					send title "&c&lGame Loss" to {teams::%{_teamOfPlayer2}%}
+		else if {dead::%loop-value%} is false:
+			stop
+		else if {dead::%loop-value%} is not set:
+			stop
+
+	if {teams::%{_teamOfPlayer2}%} is "gold":
+		loop {teams::cyan::*}:
+			send title "&a&lGame Win" with subtitle "&7Congrats" to loop-value
+
+
+command /setdeaths [<text>] [<player>]:
+	permission: op
+	trigger:
+		if arg-1 is not set:
+			send "&cCorrect usage: /setdeaths <number> <player>"
+			stop
+		if arg-2 is not set:
+			set {_Player} to player
+			set {deaths::%{_Player}%} to arg-1
+			send "&cYou have set %{_Player}%'s deaths to %arg-1%"
+			stop
+		if arg-1 is set:
+			set {_Player} to arg-2
+			set {deaths::%{_Player}%} to arg-1
+			send "&aSuccess!"
+			send "&cYou have set %{_Player}%'s deaths to %arg-1%"
+			stop
+command /setdead [<text>] [<text>]:
+	permission: op
+	trigger:
+		if arg-1 is not set:
+			send "&cCorrect usage: /setdead <true/false> <player>"
+			stop
+		if arg-2 is not set:
+			set {_Player} to player
+		if arg-2 is set:
+			set {_Player} to arg-2
+		if arg-1 is "false":
+			send "&a%{_Player}% is not dead anymore"
+			set {dead::%{_Player}%} to false
+		else if arg-1 is "true":
+			send "&a%{_Player}% is now dead"
+			set {dead::%{_Player}%} to true
+		else:
+			send "&cInvalid argument, Try: True|False"
+
+				
+on quit:
+	{inGame::%player%} is true:
+		set {deaths::%player%} to 3
+
+
