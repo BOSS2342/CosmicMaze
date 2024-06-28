@@ -1,0 +1,24 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      with:
+        server: na1396.pebblehost.com
+        port: 21
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./plugins/Skript/scripts/
+        server-dir: ./plugins/Skript/scripts/
