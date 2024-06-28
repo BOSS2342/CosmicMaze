@@ -16,9 +16,9 @@ jobs:
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@4.1.0
       with:
-        ftp-server: na1396.pebblehost.com
-        ftp-port: 21
-        ftp-username: ${{ secrets.FTP_USERNAME }}
-        ftp-password: ${{ secrets.FTP_PASSWORD }}
+        server: na1396.pebblehost.com
+        port: 21
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./plugins/Skript/scripts
         server-dir: ./plugins/Skript/scripts
